@@ -2,250 +2,248 @@ import type { Metadata } from "next";
 import { TruckScrollHero } from "../components/TruckScrollHero";
 
 export const metadata: Metadata = {
-  title: "Transfroid | Cadena de frio con control nacional",
+  title: "Transfroid | Operacion refrigerada nacional",
   description:
-    "Transporte terrestre de carga refrigerada en Colombia con trazabilidad, seguridad vial, cumplimiento normativo y control operativo de punta a punta.",
+    "Transporte terrestre de carga refrigerada en Colombia con cadena de frio, trazabilidad, seguridad vial, control operativo y cumplimiento normativo.",
 };
 
-const missionPillars = [
+const operatingSystem = [
   {
-    label: "Mision",
-    title: "Transportar carga refrigerada con precision operativa",
-    text: "Garantizamos cadena de frio, seguridad en ruta, puntualidad y satisfaccion del cliente con equipo competente, flota cuidada y cumplimiento normativo.",
+    code: "01",
+    label: "Cadena de frio",
+    text: "Control de temperatura, inspecciones previas y seguimiento durante la ruta para proteger carga sensible.",
   },
   {
-    label: "Vision 2026-2028",
-    title: "Liderazgo nacional en transporte refrigerado",
-    text: "Avanzamos para ser reconocidos por excelencia en servicio, confiabilidad, seguridad vial, preservacion de temperatura y mejora continua.",
+    code: "02",
+    label: "Seguridad vial",
+    text: "Operacion alineada con PESV, conduccion segura, gestion del riesgo y respuesta ante novedades.",
+  },
+  {
+    code: "03",
+    label: "Flota disponible",
+    text: "Mantenimiento preventivo y verificacion de equipos de refrigeracion para sostener continuidad operativa.",
+  },
+  {
+    code: "04",
+    label: "Cumplimiento",
+    text: "Procesos orientados a normativa de transporte, SST, documentacion y trazabilidad del servicio.",
   },
 ];
 
-const trustSignals = [
-  ["100%", "control de cadena de frio", "Inspeccion, trazabilidad y reaccion operativa antes, durante y despues del viaje."],
-  ["98%+", "entregas oportunas", "Planeacion de rutas, seguimiento de novedades y comunicacion clara con el cliente."],
-  ["95%+", "disponibilidad de flota", "Mantenimiento preventivo para reducir fallas, tiempos muertos y riesgos de operacion."],
-  ["PESV", "seguridad vial activa", "Cultura de conduccion segura, gestion del riesgo y respuesta ante emergencias."],
-];
-
-const capabilities = [
-  "Monitoreo GPS y control de ruta",
-  "Seguimiento de temperatura en tiempo real",
-  "Inspecciones preoperacionales digitales",
-  "Mantenimiento preventivo de unidades refrigeradas",
-  "Cumplimiento legal en transporte, SST y seguridad vial",
-  "Mejora continua basada en indicadores",
-];
-
-const services = [
+const sectors = [
   "Alimentos",
   "Lacteos",
   "Carnicos",
   "Farmaceutico",
   "Agroindustrial",
-  "Distribucion refrigerada",
+  "Distribucion urbana",
+];
+
+const metrics = [
+  ["100%", "Objetivo cadena de frio"],
+  ["98%+", "Entregas oportunas"],
+  ["95%+", "Disponibilidad de flota"],
+  ["24/7", "Seguimiento operativo"],
+];
+
+const platformRows = [
+  ["GPS", "Ruta nacional", "En seguimiento"],
+  ["TEMP", "2.8 C", "Rango estable"],
+  ["FLOTA", "95%", "Disponibilidad objetivo"],
+  ["PESV", "Activo", "Seguridad vial"],
+  ["MANT", "Preventivo", "Control mensual"],
 ];
 
 const roadmap = [
-  {
-    phase: "2026",
-    title: "Estandarizacion y control",
-    text: "Fortalecimiento del PESV, mantenimiento preventivo, indicadores operativos y procedimientos de cargue, ruta y entrega.",
-  },
-  {
-    phase: "2027",
-    title: "Digitalizacion operativa",
-    text: "Integracion de tableros, ordenes de servicio, comprobantes, alertas de temperatura y analisis por ruta, cliente y vehiculo.",
-  },
-  {
-    phase: "2028",
-    title: "Escala sostenible",
-    text: "Renovacion gradual de flota, alianzas logisticas, nuevos segmentos y expansion de cobertura con eficiencia financiera.",
-  },
+  ["2026", "Estandarizar", "PESV, mantenimiento preventivo, indicadores, inspecciones y procedimientos operativos."],
+  ["2027", "Digitalizar", "Ordenes de servicio, comprobantes, tableros, alertas de temperatura y control documental."],
+  ["2028", "Escalar", "Renovacion de flota, nuevos segmentos, alianzas logisticas y crecimiento sostenible."],
 ];
 
-const controlMetrics = [
-  ["Temp. carga", "2.8 C", "estable"],
-  ["Ruta activa", "Nacional", "en seguimiento"],
-  ["Flota", "95%", "disponible"],
-  ["Cadena frio", "100%", "objetivo viaje"],
+const policies = [
+  "Etica, honestidad y transparencia",
+  "Proteccion de la carga y de la cadena de frio",
+  "Mejora continua en procesos e indicadores",
+  "Respeto por las personas y el medio ambiente",
+  "Orientacion al cliente y calidad del servicio",
 ];
 
 export default function Home() {
   return (
-    <main className="min-h-screen overflow-x-clip bg-[#05070b] text-white">
+    <main className="min-h-screen overflow-x-clip bg-[#050505] text-white">
       <TruckScrollHero />
 
-      <section className="relative isolate overflow-hidden border-y border-white/10 bg-[#070b12] px-6 py-20 md:px-10">
-        <div className="absolute inset-0 -z-10 premium-grid opacity-70" />
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cyan-200">
-              Direccionamiento estrategico
-            </p>
-            <h2 className="mt-5 max-w-3xl text-3xl font-semibold leading-tight text-white md:text-5xl">
-              Una operacion fria, segura y medible para carga sensible.
+      <section className="terminal-band border-y border-white/15 px-4 py-4 md:px-8">
+        <div className="mx-auto flex max-w-[1500px] flex-col gap-3 font-mono text-[11px] uppercase tracking-[0.18em] text-white/70 md:flex-row md:items-center md:justify-between">
+          <span>TRANSFROID FAM SAS / Transporte terrestre refrigerado</span>
+          <span>Cadena de frio / Seguridad vial / Trazabilidad / Cobertura nacional</span>
+        </div>
+      </section>
+
+      <section className="relative px-4 py-16 md:px-8 md:py-24">
+        <div className="mx-auto grid max-w-[1500px] gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="max-w-3xl">
+            <p className="terminal-label">Direccionamiento 2026-2028</p>
+            <h2 className="mt-5 text-[clamp(2.4rem,6vw,6.6rem)] font-semibold uppercase leading-[0.88] tracking-[-0.04em] text-white">
+              Operacion fria. Control real.
             </h2>
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            {missionPillars.map((item) => (
-              <article className="frost-panel p-6" key={item.label}>
-                <p className="text-xs font-bold uppercase tracking-[0.24em] text-emerald-200">
-                  {item.label}
-                </p>
-                <h3 className="mt-4 text-xl font-semibold text-white">{item.title}</h3>
-                <p className="mt-4 text-sm leading-6 text-slate-300">{item.text}</p>
-              </article>
-            ))}
+          <div className="grid gap-px overflow-hidden rounded-sm border border-white/15 bg-white/15 md:grid-cols-2">
+            <article className="bg-[#080808] p-6 md:p-8">
+              <p className="terminal-label">Mision</p>
+              <h3 className="mt-5 text-2xl font-semibold uppercase leading-none text-white">
+                Transportar con precision
+              </h3>
+              <p className="mt-5 text-sm leading-7 text-white/65">
+                Prestamos servicios de transporte terrestre de carga refrigerada a nivel nacional, garantizando cadena de frio, seguridad, puntualidad y satisfaccion del cliente.
+              </p>
+            </article>
+            <article className="bg-[#080808] p-6 md:p-8">
+              <p className="terminal-label">Vision</p>
+              <h3 className="mt-5 text-2xl font-semibold uppercase leading-none text-white">
+                Liderazgo refrigerado
+              </h3>
+              <p className="mt-5 text-sm leading-7 text-white/65">
+                Buscamos ser reconocidos por excelencia en servicio, seguridad vial, cumplimiento, confiabilidad, preservacion de temperatura y mejora continua.
+              </p>
+            </article>
           </div>
         </div>
       </section>
 
-      <section id="servicios" className="relative px-6 py-24 md:px-10">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cyan-200">
-                Diferenciales
-              </p>
-              <h2 className="mt-5 max-w-3xl text-3xl font-semibold leading-tight md:text-5xl">
-                Control operativo para promesas que no pueden romperse.
+      <section id="servicios" className="px-4 pb-20 md:px-8 md:pb-28">
+        <div className="mx-auto max-w-[1500px]">
+          <div className="grid border-y border-white/15 lg:grid-cols-[0.75fr_1.25fr]">
+            <div className="border-b border-white/15 py-8 lg:border-b-0 lg:border-r lg:pr-8">
+              <p className="terminal-label">Sistema operativo</p>
+              <h2 className="mt-5 max-w-2xl text-4xl font-semibold uppercase leading-[0.95] tracking-[-0.03em] md:text-6xl">
+                Lo necesario para mover carga sensible.
               </h2>
             </div>
-            <p className="max-w-xl text-sm leading-6 text-slate-300 md:text-base">
-              Transfroid conecta seguridad vial, cumplimiento, mantenimiento y tecnologia para proteger el valor de cada entrega refrigerada.
-            </p>
+            <div className="grid gap-px bg-white/15 lg:grid-cols-2">
+              {operatingSystem.map((item) => (
+                <article className="group bg-[#050505] p-6 transition hover:bg-white hover:text-black md:p-8" key={item.code}>
+                  <div className="flex items-center justify-between gap-4 font-mono text-xs uppercase tracking-[0.18em] text-current opacity-60">
+                    <span>{item.code}</span>
+                    <span>{item.label}</span>
+                  </div>
+                  <p className="mt-12 text-lg leading-7 text-current opacity-70">{item.text}</p>
+                </article>
+              ))}
+            </div>
           </div>
 
-          <div className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {trustSignals.map(([value, label, text]) => (
-              <article className="frost-panel group p-6 transition duration-300 hover:-translate-y-1 hover:border-cyan-200/45" key={label}>
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-cyan-200/30 bg-cyan-200/10 font-mono text-sm font-bold text-cyan-100">
-                  {value}
-                </div>
-                <h3 className="mt-6 text-lg font-semibold capitalize text-white">{label}</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-300">{text}</p>
-              </article>
-            ))}
-          </div>
-
-          <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {capabilities.map((capability) => (
-              <div className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.035] px-4 py-3 text-sm text-slate-200" key={capability}>
-                <span className="h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_18px_rgba(110,231,183,0.8)]" />
-                {capability}
-              </div>
+          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+            {sectors.map((sector) => (
+              <div className="terminal-chip" key={sector}>{sector}</div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="control" className="relative isolate overflow-hidden bg-[#081018] px-6 py-24 md:px-10">
-        <div className="absolute inset-0 -z-10 data-scan opacity-80" />
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+      <section id="control" className="terminal-grid-bg border-y border-white/15 px-4 py-20 md:px-8 md:py-28">
+        <div className="mx-auto grid max-w-[1500px] gap-8 xl:grid-cols-[1fr_1.15fr] xl:items-start">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-emerald-200">
-              Centro de control frio
-            </p>
-            <h2 className="mt-5 text-3xl font-semibold leading-tight md:text-5xl">
-              Temperatura, ruta y riesgo en un mismo tablero.
+            <p className="terminal-label">Centro de control frio</p>
+            <h2 className="mt-5 text-[clamp(2.4rem,6vw,6rem)] font-semibold uppercase leading-[0.9] tracking-[-0.04em]">
+              La ruta convertida en senales.
             </h2>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-slate-300">
-              La operacion se gestiona con informacion accionable: ubicacion, estado de flota, alertas de refrigeracion, entregas y seguimiento a indicadores.
+            <p className="mt-8 max-w-2xl text-lg leading-8 text-white/65">
+              Cada viaje debe poder leerse: ubicacion, temperatura, estado de flota, cumplimiento, novedades y evidencia de entrega.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              {services.map((service) => (
-                <span className="rounded-full border border-cyan-200/20 bg-cyan-200/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-cyan-100" key={service}>
-                  {service}
-                </span>
-              ))}
-            </div>
           </div>
 
-          <div className="frost-panel relative overflow-hidden p-5 md:p-6">
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-200 to-transparent" />
-            <div className="flex items-center justify-between border-b border-white/10 pb-4">
-              <div>
-                <p className="font-mono text-xs uppercase tracking-[0.22em] text-cyan-200">
-                  TRANSFROID OPS
-                </p>
-                <h3 className="mt-2 text-xl font-semibold">Ruta refrigerada activa</h3>
-              </div>
-              <span className="rounded-full bg-emerald-300/15 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-emerald-200">
-                online
-              </span>
+          <div className="terminal-panel">
+            <div className="flex items-center justify-between border-b border-white/15 p-4 font-mono text-xs uppercase tracking-[0.18em] text-white/55 md:p-5">
+              <span>TRANSFROID / OPS</span>
+              <span className="text-white">ONLINE</span>
             </div>
-
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              {controlMetrics.map(([label, value, status]) => (
-                <div className="rounded-lg border border-white/10 bg-black/20 p-4" key={label}>
-                  <p className="text-xs uppercase tracking-[0.2em] text-slate-400">{label}</p>
-                  <div className="mt-3 flex items-end justify-between gap-3">
-                    <strong className="font-mono text-3xl text-white">{value}</strong>
-                    <span className="text-xs text-emerald-200">{status}</span>
-                  </div>
+            <div className="grid gap-px bg-white/15 md:grid-cols-2">
+              {metrics.map(([value, label]) => (
+                <div className="bg-[#090909] p-5 md:p-6" key={label}>
+                  <strong className="font-mono text-5xl font-semibold tracking-[-0.06em] text-white">{value}</strong>
+                  <p className="mt-4 text-xs uppercase tracking-[0.18em] text-white/50">{label}</p>
                 </div>
               ))}
             </div>
-
-            <div className="mt-6 rounded-lg border border-cyan-200/15 bg-cyan-200/[0.04] p-4">
-              <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-slate-400">
-                <span>Bogota</span>
+            <div className="p-4 md:p-5">
+              <div className="overflow-hidden rounded-sm border border-white/15">
+                {platformRows.map(([code, value, status]) => (
+                  <div className="grid grid-cols-[0.55fr_1fr_1fr] border-b border-white/10 last:border-b-0" key={code}>
+                    <span className="bg-white px-3 py-3 font-mono text-xs font-bold text-black">{code}</span>
+                    <span className="px-3 py-3 font-mono text-xs uppercase tracking-[0.14em] text-white">{value}</span>
+                    <span className="px-3 py-3 text-xs uppercase tracking-[0.14em] text-white/55">{status}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5 h-2 overflow-hidden rounded-full bg-white/10">
+                <div className="h-full w-[74%] bg-white" />
+              </div>
+              <div className="mt-4 flex justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-white/45">
+                <span>Origen</span>
+                <span>Ruta activa</span>
                 <span>Entrega</span>
               </div>
-              <div className="relative mt-6 h-2 rounded-full bg-white/10">
-                <div className="absolute inset-y-0 left-0 w-[74%] rounded-full bg-gradient-to-r from-cyan-300 via-emerald-300 to-lime-200 shadow-[0_0_28px_rgba(103,232,249,0.45)]" />
-                <span className="absolute left-[72%] top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-2 border-white bg-cyan-300 shadow-[0_0_22px_rgba(103,232,249,0.85)]" />
-              </div>
-              <p className="mt-6 text-sm leading-6 text-slate-300">
-                Monitoreo continuo para anticipar desviaciones, proteger la carga y sostener la promesa de servicio.
-              </p>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="estrategia" className="px-6 py-24 md:px-10">
-        <div className="mx-auto max-w-7xl">
-          <div className="max-w-3xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cyan-200">
-              Plan publico 2026-2028
-            </p>
-            <h2 className="mt-5 text-3xl font-semibold leading-tight md:text-5xl">
-              Crecimiento sostenible con tecnologia, seguridad y servicio.
-            </h2>
+      <section id="estrategia" className="px-4 py-20 md:px-8 md:py-28">
+        <div className="mx-auto max-w-[1500px]">
+          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+            <div>
+              <p className="terminal-label">Plan publico</p>
+              <h2 className="mt-5 text-4xl font-semibold uppercase leading-[0.95] tracking-[-0.03em] md:text-6xl">
+                2026-2028: crecer sin perder control.
+              </h2>
+            </div>
+            <div className="grid gap-px overflow-hidden rounded-sm border border-white/15 bg-white/15">
+              {roadmap.map(([year, title, text]) => (
+                <article className="grid bg-[#080808] p-6 md:grid-cols-[0.3fr_0.7fr] md:p-8" key={year}>
+                  <div>
+                    <p className="font-mono text-4xl font-semibold tracking-[-0.06em]">{year}</p>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-semibold uppercase leading-none">{title}</h3>
+                    <p className="mt-4 text-sm leading-7 text-white/65">{text}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
 
-          <div className="mt-12 grid gap-5 lg:grid-cols-3">
-            {roadmap.map((item) => (
-              <article className="frost-panel p-6" key={item.phase}>
-                <p className="font-mono text-sm font-bold text-cyan-200">{item.phase}</p>
-                <h3 className="mt-5 text-2xl font-semibold text-white">{item.title}</h3>
-                <p className="mt-4 text-sm leading-6 text-slate-300">{item.text}</p>
-              </article>
+          <div className="mt-14 grid gap-3 md:grid-cols-5">
+            {policies.map((policy) => (
+              <div className="border border-white/15 p-4 text-sm leading-6 text-white/65" key={policy}>
+                {policy}
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="cotizar" className="px-6 pb-24 md:px-10">
-        <div className="mx-auto grid max-w-7xl gap-8 rounded-lg border border-cyan-200/20 bg-[linear-gradient(135deg,rgba(8,47,73,0.9),rgba(5,7,11,0.96)_48%,rgba(20,83,45,0.55))] p-6 shadow-2xl shadow-cyan-950/30 md:grid-cols-[1fr_auto] md:items-center md:p-10">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cyan-100">
-              Transporte refrigerado con control total
-            </p>
-            <h2 className="mt-4 max-w-3xl text-3xl font-semibold leading-tight md:text-5xl">
-              Convirtamos tu operacion de frio en una ruta segura, visible y confiable.
-            </h2>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-cyan-50/80">
-              Coordinamos carga refrigerada a nivel nacional con enfoque en trazabilidad, puntualidad, cumplimiento y mejora continua.
-            </p>
+      <section id="cotizar" className="px-4 pb-20 md:px-8 md:pb-28">
+        <div className="mx-auto max-w-[1500px] border border-white/15 bg-white text-black">
+          <div className="grid gap-8 p-6 md:grid-cols-[1fr_auto] md:items-end md:p-10">
+            <div>
+              <p className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-black/55">
+                Cotizacion / carga refrigerada nacional
+              </p>
+              <h2 className="mt-5 max-w-5xl text-[clamp(2.4rem,6vw,6.8rem)] font-semibold uppercase leading-[0.88] tracking-[-0.05em]">
+                Mover frio con evidencia.
+              </h2>
+            </div>
+            <a
+              className="inline-flex min-h-12 items-center justify-center rounded-full border border-black bg-black px-6 py-3 text-sm font-bold uppercase tracking-[0.16em] text-white transition hover:bg-white hover:text-black"
+              href="mailto:comercial@transfroid.com?subject=Cotizacion%20de%20transporte%20refrigerado"
+            >
+              Solicitar cotizacion
+            </a>
           </div>
-          <a
-            className="inline-flex min-h-12 items-center justify-center rounded-full bg-cyan-200 px-6 py-3 text-sm font-bold uppercase tracking-[0.16em] text-slate-950 transition hover:bg-white"
-            href="mailto:comercial@transfroid.com?subject=Cotizacion%20de%20transporte%20refrigerado"
-          >
-            Solicitar cotizacion
-          </a>
+          <div className="border-t border-black/15 p-6 font-mono text-xs uppercase tracking-[0.18em] text-black/55 md:p-10">
+            Transporte terrestre refrigerado / trazabilidad / seguridad vial / cumplimiento / mejora continua
+          </div>
         </div>
       </section>
     </main>

@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #05070b;
-  --foreground: #f8fafc;
+  --background: #050505;
+  --foreground: #ffffff;
 }
 
 @theme inline {
@@ -23,8 +23,8 @@ html {
 }
 
 ::selection {
-  background: rgba(165, 243, 252, 0.35);
-  color: #ffffff;
+  background: #ffffff;
+  color: #050505;
 }
 
 .frost-panel {
@@ -35,6 +35,52 @@ html {
     rgba(5, 7, 11, 0.62);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
   backdrop-filter: blur(18px);
+}
+
+.terminal-label {
+  color: rgba(255, 255, 255, 0.58);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.terminal-band {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06), transparent 18%),
+    #050505;
+}
+
+.terminal-chip {
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  display: inline-flex;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  font-weight: 700;
+  justify-content: center;
+  letter-spacing: 0.16em;
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.terminal-panel {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 2px;
+  background: rgba(5, 5, 5, 0.86);
+  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.42);
+}
+
+.terminal-grid-bg {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 34%);
+  background-size: 64px 64px, 64px 64px, auto;
 }
 
 .premium-grid {

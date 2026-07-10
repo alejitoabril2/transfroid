@@ -20,12 +20,12 @@ const DESKTOP_FOCAL_POINT = { x: 0.5, y: 0.5 };
 const MOBILE_FOCAL_POINT = { x: 0.5, y: 0.5 };
 
 const HERO_COPY = {
-  eyebrow: "TRANSFROID FAM SAS",
-  title: "Cadena de frio nacional con control inteligente",
+  eyebrow: "TRANSFROID / COLD CHAIN OPS",
+  title: "Transporte refrigerado bajo control.",
   subtitle:
-    "Movemos carga refrigerada con trazabilidad, seguridad vial y precision operativa en cada ruta.",
-  primaryCta: "Solicitar cotizacion",
-  secondaryCta: "Ver centro de control",
+    "Carga sensible, rutas nacionales, temperatura vigilada, seguridad vial y evidencia operativa.",
+  primaryCta: "Cotizar operacion",
+  secondaryCta: "Ver sistema",
 };
 
 function getFrameSrc(frame: number) {
@@ -271,22 +271,21 @@ export function ImageSequenceHero() {
           role="img"
         />
 
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(3,7,18,0.84)_0%,rgba(3,7,18,0.58)_36%,rgba(3,7,18,0.12)_70%,rgba(5,7,11,0.48)_100%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_64%_42%,transparent_0%,rgba(5,7,11,0.06)_40%,rgba(5,7,11,0.72)_100%)]" />
-        <div className="absolute inset-0 opacity-55 premium-grid" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.94)_0%,rgba(0,0,0,0.74)_38%,rgba(0,0,0,0.24)_70%,rgba(0,0,0,0.66)_100%)]" />
+        <div className="absolute inset-0 opacity-70 terminal-grid-bg" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#05070b] to-transparent" />
 
         <header className="absolute left-6 right-6 top-5 z-30 flex items-center justify-between border-b border-white/12 pb-4 md:left-10 md:right-10">
-          <a className="text-sm font-semibold uppercase tracking-[0.28em] text-white" href="#">
+          <a className="font-mono text-sm font-semibold uppercase tracking-[0.28em] text-white" href="#">
             Transfroid
           </a>
-          <nav className="hidden items-center gap-6 text-xs font-semibold uppercase tracking-[0.18em] text-cyan-50/80 md:flex">
+          <nav className="hidden items-center gap-6 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-white/65 md:flex">
             <a className="transition hover:text-white" href="#servicios">Servicios</a>
             <a className="transition hover:text-white" href="#control">Control</a>
             <a className="transition hover:text-white" href="#estrategia">Estrategia</a>
           </nav>
           <a
-            className="rounded-full border border-white/18 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white backdrop-blur transition hover:bg-white/15"
+            className="rounded-full border border-white/35 bg-white px-4 py-2 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-black transition hover:bg-transparent hover:text-white"
             href="#cotizar"
           >
             Cotizar
@@ -294,34 +293,34 @@ export function ImageSequenceHero() {
         </header>
 
         <div className="absolute inset-x-0 bottom-[8vh] z-20 px-6 md:bottom-[12vh] md:px-10">
-          <div className="max-w-3xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.34em] text-cyan-100/85">
+          <div className="max-w-5xl">
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.34em] text-white/65">
               {HERO_COPY.eyebrow}
             </p>
-            <h1 className="mt-5 max-w-4xl text-balance text-4xl font-semibold leading-[1.02] text-white md:text-7xl">
+            <h1 className="mt-5 max-w-5xl text-balance text-[clamp(3rem,9vw,8.8rem)] font-semibold uppercase leading-[0.84] tracking-[-0.06em] text-white">
               {HERO_COPY.title}
             </h1>
-            <p className="mt-6 max-w-2xl text-pretty text-base leading-7 text-slate-200 md:text-xl">
+            <p className="mt-6 max-w-2xl text-pretty text-base leading-7 text-white/70 md:text-xl">
               {HERO_COPY.subtitle}
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
-                className="inline-flex min-h-12 items-center justify-center rounded-full bg-cyan-300 px-6 py-3 text-sm font-bold uppercase tracking-[0.14em] text-slate-950 transition hover:bg-white"
+                className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 py-3 font-mono text-sm font-bold uppercase tracking-[0.14em] text-black transition hover:bg-black hover:text-white"
                 href="#cotizar"
               >
                 {HERO_COPY.primaryCta}
               </a>
               <a
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/22 bg-white/10 px-6 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white backdrop-blur transition hover:bg-white/15"
+                className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/30 bg-black/20 px-6 py-3 font-mono text-sm font-bold uppercase tracking-[0.14em] text-white backdrop-blur transition hover:bg-white hover:text-black"
                 href="#control"
               >
                 {HERO_COPY.secondaryCta}
               </a>
             </div>
-            <div className="mt-8 grid max-w-xl grid-cols-3 gap-3 text-xs uppercase tracking-[0.14em] text-cyan-50/80">
-              <span className="rounded-lg border border-cyan-200/20 bg-cyan-200/8 px-3 py-2">GPS</span>
-              <span className="rounded-lg border border-cyan-200/20 bg-cyan-200/8 px-3 py-2">PESV</span>
-              <span className="rounded-lg border border-cyan-200/20 bg-cyan-200/8 px-3 py-2">Frio 24/7</span>
+            <div className="mt-8 grid max-w-xl grid-cols-3 gap-px overflow-hidden rounded-sm border border-white/20 bg-white/20 font-mono text-xs uppercase tracking-[0.14em] text-white">
+              <span className="bg-black/55 px-3 py-3">GPS</span>
+              <span className="bg-black/55 px-3 py-3">PESV</span>
+              <span className="bg-black/55 px-3 py-3">Frio 24/7</span>
             </div>
           </div>
         </div>

@@ -83,6 +83,19 @@ html {
   background-size: 64px 64px, 64px 64px, auto;
 }
 
+.hero-scroll-title {
+  --hero-title-progress: 0;
+  clip-path: inset(0 calc((1 - var(--hero-title-progress)) * 100%) 0 0);
+  opacity: calc(0.08 + (var(--hero-title-progress) * 0.92));
+  text-shadow: 0 16px 50px rgba(0, 0, 0, 0.62);
+  transform: translateY(calc((1 - var(--hero-title-progress)) * 28px));
+  transition:
+    clip-path 120ms linear,
+    opacity 120ms linear,
+    transform 120ms linear;
+  will-change: clip-path, opacity, transform;
+}
+
 .premium-grid {
   background-image:
     linear-gradient(rgba(103, 232, 249, 0.1) 1px, transparent 1px),

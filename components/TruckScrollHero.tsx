@@ -12,21 +12,14 @@ const padFrameNumber = (frame: number) => String(frame).padStart(3, "0");
 // - FRAME_BASE_PATH: ruta publica donde viven los JPG.
 // - SCROLL_HEIGHT_CLASS: duracion/altura del scrubbing controlado por scroll.
 // - DESKTOP_FOCAL_POINT / MOBILE_FOCAL_POINT: posicion visual del canvas.
-// - HERO_COPY: textos visibles sobre la secuencia.
+// - HERO_TITLE: texto visible sobre la secuencia.
 const FRAME_COUNT = 60;
 const FRAME_BASE_PATH = "/sequences/truck";
 const SCROLL_HEIGHT_CLASS = "h-[320vh]";
 const DESKTOP_FOCAL_POINT = { x: 0.5, y: 0.5 };
 const MOBILE_FOCAL_POINT = { x: 0.5, y: 0.5 };
 
-const HERO_COPY = {
-  eyebrow: "TRANSFROID / COLD CHAIN OPS",
-  title: "Transporte refrigerado bajo control.",
-  subtitle:
-    "Carga sensible, rutas nacionales, temperatura vigilada, seguridad vial y evidencia operativa.",
-  primaryCta: "Cotizar operacion",
-  secondaryCta: "Ver sistema",
-};
+const HERO_TITLE = "Transporte refrigerado bajo control.";
 
 function getFrameSrc(frame: number) {
   return `${FRAME_BASE_PATH}/ezgif-frame-${padFrameNumber(frame)}.jpg`;
@@ -59,6 +52,7 @@ function drawImageCover(
 export function ImageSequenceHero() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const titleRef = useRef<HTMLHeadingElement | null>(null);
   const imagesRef = useRef<(HTMLImageElement | null)[]>(
     Array.from({ length: FRAME_COUNT }, () => null),
   );
@@ -97,6 +91,20 @@ export function ImageSequenceHero() {
       window.matchMedia("(max-width: 767px)").matches
         ? MOBILE_FOCAL_POINT
         : DESKTOP_FOCAL_POINT;
+
+    const updateTitleReveal = (progress: number) => {
+      const title = titleRef.current;
+
+      if (!title) {
+        return;
+      }
+
+      const revealProgress = reducedMotionRef.current
+        ? 1
+        : clamp((progress - 0.08) / 0.46);
+
+      title.style.setProperty("--hero-title-progress", String(revealProgress));
+    };
 
     const drawFrame = (frameIndex: number) => {
       const image =
@@ -196,6 +204,7 @@ export function ImageSequenceHero() {
 
       if (reducedMotionRef.current) {
         currentFrameRef.current = FRAME_COUNT - 1;
+        updateTitleReveal(1);
         drawFrame(currentFrameRef.current);
         return;
       }
@@ -204,6 +213,8 @@ export function ImageSequenceHero() {
       const scrollableDistance = rect.height - window.innerHeight;
       const progress = clamp(-rect.top / scrollableDistance);
       const nextFrame = Math.round(progress * (FRAME_COUNT - 1));
+
+      updateTitleReveal(progress);
 
       if (nextFrame !== currentFrameRef.current) {
         currentFrameRef.current = nextFrame;
@@ -271,8 +282,8 @@ export function ImageSequenceHero() {
           role="img"
         />
 
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.94)_0%,rgba(0,0,0,0.74)_38%,rgba(0,0,0,0.24)_70%,rgba(0,0,0,0.66)_100%)]" />
-        <div className="absolute inset-0 opacity-70 terminal-grid-bg" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.58)_0%,rgba(0,0,0,0.34)_42%,rgba(0,0,0,0.08)_70%,rgba(0,0,0,0.42)_100%)]" />
+        <div className="absolute inset-0 opacity-45 terminal-grid-bg" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#05070b] to-transparent" />
 
         <header className="absolute left-6 right-6 top-5 z-30 flex items-center justify-between border-b border-white/12 pb-4 md:left-10 md:right-10">
@@ -292,36 +303,14 @@ export function ImageSequenceHero() {
           </a>
         </header>
 
-        <div className="absolute inset-x-0 bottom-[8vh] z-20 px-6 md:bottom-[12vh] md:px-10">
-          <div className="max-w-5xl">
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.34em] text-white/65">
-              {HERO_COPY.eyebrow}
-            </p>
-            <h1 className="mt-5 max-w-5xl text-balance text-[clamp(3rem,9vw,8.8rem)] font-semibold uppercase leading-[0.84] tracking-[-0.06em] text-white">
-              {HERO_COPY.title}
+        <div className="pointer-events-none absolute inset-x-0 bottom-[10vh] z-20 px-6 md:bottom-[12vh] md:px-10">
+          <div className="max-w-4xl">
+            <h1
+              ref={titleRef}
+              className="hero-scroll-title max-w-4xl text-balance text-[clamp(2.35rem,5.8vw,5.9rem)] font-semibold uppercase leading-[0.88] tracking-[-0.055em] text-white"
+            >
+              {HERO_TITLE}
             </h1>
-            <p className="mt-6 max-w-2xl text-pretty text-base leading-7 text-white/70 md:text-xl">
-              {HERO_COPY.subtitle}
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a
-                className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 py-3 font-mono text-sm font-bold uppercase tracking-[0.14em] text-black transition hover:bg-black hover:text-white"
-                href="#cotizar"
-              >
-                {HERO_COPY.primaryCta}
-              </a>
-              <a
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/30 bg-black/20 px-6 py-3 font-mono text-sm font-bold uppercase tracking-[0.14em] text-white backdrop-blur transition hover:bg-white hover:text-black"
-                href="#control"
-              >
-                {HERO_COPY.secondaryCta}
-              </a>
-            </div>
-            <div className="mt-8 grid max-w-xl grid-cols-3 gap-px overflow-hidden rounded-sm border border-white/20 bg-white/20 font-mono text-xs uppercase tracking-[0.14em] text-white">
-              <span className="bg-black/55 px-3 py-3">GPS</span>
-              <span className="bg-black/55 px-3 py-3">PESV</span>
-              <span className="bg-black/55 px-3 py-3">Frio 24/7</span>
-            </div>
           </div>
         </div>
 

@@ -13,7 +13,7 @@ const padFrameNumber = (frame: number) => String(frame).padStart(3, "0");
 // - SCROLL_HEIGHT_CLASS: duracion/altura del scrubbing controlado por scroll.
 // - DESKTOP_FOCAL_POINT / MOBILE_FOCAL_POINT: posicion visual del canvas.
 // - HERO_COPY: textos visibles sobre la secuencia.
-const FRAME_COUNT = 90;
+const FRAME_COUNT = 60;
 const FRAME_BASE_PATH = "/sequences/truck";
 const SCROLL_HEIGHT_CLASS = "h-[320vh]";
 const DESKTOP_FOCAL_POINT = { x: 0.5, y: 0.5 };

@@ -280,6 +280,14 @@ export function ImageSequenceHero() {
           style={{ backgroundImage: `url(${getFrameSrc(1)})` }}
           aria-label="Secuencia cinematografica de camion de transporte"
           role="img"
+        <video
+          ref={videoRef}
+          className="absolute inset-0 h-full w-full bg-[#05070b] object-cover object-[62%_50%] md:object-[50%_50%]"
+          muted
+          playsInline
+          preload="auto"
+          src={HERO_VIDEO_SRC}
+          aria-hidden="true"
         />
 
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.58)_0%,rgba(0,0,0,0.34)_42%,rgba(0,0,0,0.08)_70%,rgba(0,0,0,0.42)_100%)]" />

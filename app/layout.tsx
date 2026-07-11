@@ -18,6 +18,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
+      <head>
+        <link
+          rel="preload"
+          href="/videos/transfroid-hero-1080p.mp4"
+          as="video"
+          type="video/mp4"
+        />
+      </head>
       <body>{children}</body>
     </html>
   );

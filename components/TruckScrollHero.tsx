@@ -1,96 +1,44 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const clamp = (value: number, min = 0, max = 1) =>
   Math.min(Math.max(value, min), max);
 
-const padFrameNumber = (frame: number) => String(frame).padStart(3, "0");
-
 // Ajustes principales del hero:
-// - FRAME_COUNT: cantidad de imagenes disponibles en la secuencia.
-// - FRAME_BASE_PATH: ruta publica donde viven los JPG.
+// - HERO_VIDEO_SRC: video optimizado usado para el scrubbing principal.
 // - SCROLL_HEIGHT_CLASS: duracion/altura del scrubbing controlado por scroll.
-// - DESKTOP_FOCAL_POINT / MOBILE_FOCAL_POINT: posicion visual del canvas.
+// - DESKTOP_FOCAL_POINT: posicion visual del video.
 // - HERO_TITLE: texto visible sobre la secuencia.
-const FRAME_COUNT = 60;
-const FRAME_BASE_PATH = "/sequences/truck";
+const HERO_VIDEO_SRC = "/videos/transfroid-hero-1080p.mp4";
 const SCROLL_HEIGHT_CLASS = "h-[320vh]";
 const DESKTOP_FOCAL_POINT = { x: 0.5, y: 0.5 };
-const MOBILE_FOCAL_POINT = { x: 0.5, y: 0.5 };
 
 const HERO_TITLE = "Transporte refrigerado bajo control.";
 
-function getFrameSrc(frame: number) {
-  return `${FRAME_BASE_PATH}/ezgif-frame-${padFrameNumber(frame)}.jpg`;
-}
-
-function drawImageCover(
-  context: CanvasRenderingContext2D,
-  image: HTMLImageElement,
-  canvasWidth: number,
-  canvasHeight: number,
-  focalPoint: { x: number; y: number },
-) {
-  if (canvasWidth === 0 || canvasHeight === 0) {
-    return;
-  }
-
-  const scale = Math.max(
-    canvasWidth / image.naturalWidth,
-    canvasHeight / image.naturalHeight,
-  );
-  const width = image.naturalWidth * scale;
-  const height = image.naturalHeight * scale;
-  const x = (canvasWidth - width) * focalPoint.x;
-  const y = (canvasHeight - height) * focalPoint.y;
-
-  context.clearRect(0, 0, canvasWidth, canvasHeight);
-  context.drawImage(image, x, y, width, height);
-}
-
 export function ImageSequenceHero() {
   const sectionRef = useRef<HTMLElement | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
-  const imagesRef = useRef<(HTMLImageElement | null)[]>(
-    Array.from({ length: FRAME_COUNT }, () => null),
-  );
-  const currentFrameRef = useRef(0);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const currentProgressRef = useRef(0);
   const animationFrameRef = useRef<number | null>(null);
   const reducedMotionRef = useRef(false);
 
-  const frameSources = useMemo(
-    () => Array.from({ length: FRAME_COUNT }, (_, index) => getFrameSrc(index + 1)),
-    [],
-  );
-
   useEffect(() => {
     const section = sectionRef.current;
-    const canvas = canvasRef.current;
+    const video = videoRef.current;
 
-    if (!section || !canvas) {
+    if (!section || !video) {
       return;
     }
-
-    const context = canvas.getContext("2d", { alpha: false });
-
-    if (!context) {
-      return;
-    }
-
-    context.imageSmoothingEnabled = true;
-    context.imageSmoothingQuality = "high";
 
     let isMounted = true;
-    let preloadStarted = false;
+    let isVideoReady = false;
+    let pendingVideoSeek = false;
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     reducedMotionRef.current = motionQuery.matches;
-
-    const getFocalPoint = () =>
-      window.matchMedia("(max-width: 767px)").matches
-        ? MOBILE_FOCAL_POINT
-        : DESKTOP_FOCAL_POINT;
+    video.muted = true;
+    video.playsInline = true;
 
     const updateTitleReveal = (progress: number) => {
       const title = titleRef.current;
@@ -106,120 +54,72 @@ export function ImageSequenceHero() {
       title.style.setProperty("--hero-title-progress", String(revealProgress));
     };
 
-    const drawFrame = (frameIndex: number) => {
-      const image =
-        imagesRef.current[frameIndex] ??
-        imagesRef.current
-          .slice(0, frameIndex + 1)
-          .reverse()
-          .find(Boolean) ??
-        imagesRef.current.find(Boolean);
-
-      if (!image) {
+    const seekVideo = (progress: number) => {
+      if (!isVideoReady || pendingVideoSeek || !Number.isFinite(video.duration)) {
         return;
       }
 
-      drawImageCover(
-        context,
-        image,
-        canvas.clientWidth,
-        canvas.clientHeight,
-        getFocalPoint(),
-      );
-    };
+      const targetTime = clamp(progress) * video.duration;
 
-    const resizeCanvas = () => {
-      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-      const width = canvas.clientWidth;
-      const height = canvas.clientHeight;
-
-      if (width === 0 || height === 0) {
+      if (Math.abs(video.currentTime - targetTime) < 0.035) {
         return;
       }
 
-      canvas.width = Math.round(width * pixelRatio);
-      canvas.height = Math.round(height * pixelRatio);
-      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-      drawFrame(currentFrameRef.current);
+      pendingVideoSeek = true;
+      video.currentTime = targetTime;
     };
 
-    const loadFrame = async (frameIndex: number) => {
-      if (imagesRef.current[frameIndex]) {
-        return imagesRef.current[frameIndex];
+    const updateVideoProgress = (progress: number) => {
+      currentProgressRef.current = progress;
+      seekVideo(progress);
+    };
+
+    const handleVideoReady = () => {
+      if (!isMounted) {
+        return;
       }
 
-      const image = new Image();
-      image.decoding = "async";
-      image.src = frameSources[frameIndex];
-      imagesRef.current[frameIndex] = image;
+      isVideoReady = true;
+      updateVideoProgress(currentProgressRef.current);
+    };
 
+    const handleVideoSeeked = () => {
+      pendingVideoSeek = false;
+
+      if (!isMounted) {
+        return;
+      }
+
+      const targetTime = clamp(currentProgressRef.current) * video.duration;
+
+      if (Number.isFinite(targetTime) && Math.abs(video.currentTime - targetTime) >= 0.035) {
+        seekVideo(currentProgressRef.current);
+      }
+    };
+
+    const handleVideoError = () => {
+      isVideoReady = false;
+    };
+
+    const loadVideo = () => {
       try {
-        await image.decode();
+        video.load();
       } catch {
-        await new Promise<void>((resolve, reject) => {
-          image.onload = () => resolve();
-          image.onerror = () => reject(new Error(`No se pudo cargar ${image.src}`));
-        });
+        isVideoReady = false;
       }
-
-      if (isMounted && frameIndex === currentFrameRef.current) {
-        drawFrame(frameIndex);
-      }
-
-      return image;
-    };
-
-    const scheduleSequencePreload = () => {
-      if (preloadStarted) {
-        return;
-      }
-
-      preloadStarted = true;
-      const frameIndexes = Array.from(
-        { length: FRAME_COUNT - 1 },
-        (_, index) => index + 1,
-      );
-
-      const loadNext = () => {
-        const nextFrame = frameIndexes.shift();
-
-        if (nextFrame === undefined || !isMounted) {
-          return;
-        }
-
-        void loadFrame(nextFrame).finally(() => {
-          if ("requestIdleCallback" in window) {
-            window.requestIdleCallback(loadNext, { timeout: 250 });
-          } else {
-            globalThis.setTimeout(loadNext, 24);
-          }
-        });
-      };
-
-      loadNext();
     };
 
     const updateFrameFromScroll = () => {
       animationFrameRef.current = null;
 
-      if (reducedMotionRef.current) {
-        currentFrameRef.current = FRAME_COUNT - 1;
-        updateTitleReveal(1);
-        drawFrame(currentFrameRef.current);
-        return;
-      }
-
       const rect = section.getBoundingClientRect();
       const scrollableDistance = rect.height - window.innerHeight;
-      const progress = clamp(-rect.top / scrollableDistance);
-      const nextFrame = Math.round(progress * (FRAME_COUNT - 1));
+      const progress = reducedMotionRef.current
+        ? 1
+        : clamp(-rect.top / scrollableDistance);
 
       updateTitleReveal(progress);
-
-      if (nextFrame !== currentFrameRef.current) {
-        currentFrameRef.current = nextFrame;
-        drawFrame(nextFrame);
-      }
+      updateVideoProgress(progress);
     };
 
     const requestScrollUpdate = () => {
@@ -236,36 +136,40 @@ export function ImageSequenceHero() {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          scheduleSequencePreload();
+          loadVideo();
         }
       },
       { rootMargin: "900px 0px" },
     );
 
-    resizeCanvas();
-    void loadFrame(reducedMotionRef.current ? FRAME_COUNT - 1 : 0).then(() => {
-      resizeCanvas();
-      requestScrollUpdate();
-    });
+    video.addEventListener("loadedmetadata", handleVideoReady);
+    video.addEventListener("loadeddata", handleVideoReady);
+    video.addEventListener("seeked", handleVideoSeeked);
+    video.addEventListener("error", handleVideoError);
+
+    loadVideo();
 
     observer.observe(section);
     window.addEventListener("scroll", requestScrollUpdate, { passive: true });
-    window.addEventListener("resize", resizeCanvas);
     motionQuery.addEventListener("change", handleMotionPreferenceChange);
     requestScrollUpdate();
 
     return () => {
       isMounted = false;
       observer.disconnect();
+      video.pause();
       window.removeEventListener("scroll", requestScrollUpdate);
-      window.removeEventListener("resize", resizeCanvas);
       motionQuery.removeEventListener("change", handleMotionPreferenceChange);
+      video.removeEventListener("loadedmetadata", handleVideoReady);
+      video.removeEventListener("loadeddata", handleVideoReady);
+      video.removeEventListener("seeked", handleVideoSeeked);
+      video.removeEventListener("error", handleVideoError);
 
       if (animationFrameRef.current !== null) {
         window.cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [frameSources]);
+  }, []);
 
   return (
     <section
@@ -274,12 +178,17 @@ export function ImageSequenceHero() {
       aria-label="Hero de Transfroid con camion controlado por scroll"
     >
       <div className="sticky top-0 h-screen overflow-hidden">
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0 h-full w-full bg-[#05070b] bg-cover bg-center"
-          style={{ backgroundImage: `url(${getFrameSrc(1)})` }}
-          aria-label="Secuencia cinematografica de camion de transporte"
-          role="img"
+        <video
+          ref={videoRef}
+          className="absolute inset-0 h-full w-full bg-[#05070b] object-cover"
+          muted
+          playsInline
+          preload="auto"
+          src={HERO_VIDEO_SRC}
+          style={{
+            objectPosition: `${DESKTOP_FOCAL_POINT.x * 100}% ${DESKTOP_FOCAL_POINT.y * 100}%`,
+          }}
+          aria-hidden="true"
         />
 
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.58)_0%,rgba(0,0,0,0.34)_42%,rgba(0,0,0,0.08)_70%,rgba(0,0,0,0.42)_100%)]" />

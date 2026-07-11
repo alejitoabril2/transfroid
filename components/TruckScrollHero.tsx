@@ -191,7 +191,7 @@ export function ImageSequenceHero() {
           if ("requestIdleCallback" in window) {
             window.requestIdleCallback(loadNext, { timeout: 250 });
           } else {
-            window.setTimeout(loadNext, 24);
+            globalThis.setTimeout(loadNext, 24);
           }
         });
       };

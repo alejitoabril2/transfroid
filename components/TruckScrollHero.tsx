@@ -283,7 +283,6 @@ export function ImageSequenceHero() {
         />
 
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.58)_0%,rgba(0,0,0,0.34)_42%,rgba(0,0,0,0.08)_70%,rgba(0,0,0,0.42)_100%)]" />
-        <div className="absolute inset-0 opacity-45 terminal-grid-bg" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#05070b] to-transparent" />
 
         <header className="absolute left-6 right-6 top-5 z-30 flex items-center justify-between border-b border-white/12 pb-4 md:left-10 md:right-10">

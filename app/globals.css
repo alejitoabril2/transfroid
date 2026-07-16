@@ -1,8 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #050505;
-  --foreground: #ffffff;
+  --background: #031b3a;
+  --foreground: #f5fcff;
+  --tf-blue-deep: #031b3a;
+  --tf-blue-ink: #06142e;
+  --tf-blue-vivid: #0077ff;
+  --tf-cyan: #00d9ff;
+  --tf-lime: #b7ff00;
+  --tf-ice: #f5fcff;
   --font-geist-sans: Arial, Helvetica, sans-serif;
   --font-geist-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
@@ -26,8 +32,8 @@ html {
 }
 
 ::selection {
-  background: #ffffff;
-  color: #050505;
+  background: var(--tf-lime);
+  color: var(--tf-blue-deep);
 }
 
 .frost-panel {
@@ -41,7 +47,7 @@ html {
 }
 
 .terminal-label {
-  color: rgba(255, 255, 255, 0.58);
+  color: color-mix(in srgb, var(--tf-cyan) 72%, white 28%);
   font-family: var(--font-geist-mono), monospace;
   font-size: 11px;
   font-weight: 700;
@@ -50,7 +56,7 @@ html {
 }
 
 .text-shadow {
-  text-shadow: 0 18px 55px rgba(0, 0, 0, 0.58);
+  text-shadow: 0 18px 55px rgba(0, 18, 46, 0.62);
 }
 
 .site-nav {
@@ -69,13 +75,15 @@ html {
   left: 1.25rem;
   height: 1px;
   content: "";
-  background: rgba(255, 255, 255, 0.14);
+  background: color-mix(in srgb, var(--tf-cyan) 32%, transparent);
   transition: background 260ms ease;
 }
 
 .site-nav-solid {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(3, 7, 18, 0.72);
+  border-bottom: 1px solid color-mix(in srgb, var(--tf-cyan) 20%, transparent);
+  background:
+    linear-gradient(90deg, rgba(0, 217, 255, 0.12), rgba(183, 255, 0, 0.08)),
+    rgba(3, 27, 58, 0.82);
   backdrop-filter: blur(18px);
 }
 
@@ -97,7 +105,7 @@ html {
   flex-direction: column;
   justify-content: flex-end;
   padding: 6rem 1.25rem 2rem;
-  background: rgba(3, 7, 18, 0.96);
+  background: rgba(3, 27, 58, 0.97);
   opacity: 0;
   transform: translateY(-10px);
   transition:
@@ -113,8 +121,8 @@ html {
 
 .hero-grid {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    linear-gradient(color-mix(in srgb, var(--tf-cyan) 13%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--tf-cyan) 10%, transparent) 1px, transparent 1px);
   background-size: 72px 72px;
   mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 70%, transparent 100%);
 }
@@ -131,7 +139,7 @@ html {
   place-items: center;
   overflow: hidden;
   pointer-events: auto;
-  background: #030712;
+  background: var(--tf-blue-deep);
 }
 
 .hero-loader-panel {
@@ -140,19 +148,19 @@ html {
   left: 0;
   height: 50%;
   background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035), transparent 18%, rgba(255, 255, 255, 0.04) 82%, transparent),
-    #030712;
+    linear-gradient(90deg, color-mix(in srgb, var(--tf-cyan) 10%, transparent), transparent 18%, color-mix(in srgb, var(--tf-lime) 8%, transparent) 82%, transparent),
+    var(--tf-blue-deep);
   transition: transform 900ms cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 .hero-loader-panel-top {
   top: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  border-bottom: 1px solid color-mix(in srgb, var(--tf-cyan) 42%, transparent);
 }
 
 .hero-loader-panel-bottom {
   bottom: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid color-mix(in srgb, var(--tf-lime) 28%, transparent);
 }
 
 .hero-loader-content {
@@ -168,7 +176,10 @@ html {
 }
 
 .hero-loader-logo {
-  color: #ffffff;
+  color: var(--tf-ice);
+  text-shadow:
+    0 0 28px color-mix(in srgb, var(--tf-cyan) 55%, transparent),
+    0 0 54px color-mix(in srgb, var(--tf-lime) 24%, transparent);
   font-family: var(--font-geist-mono), monospace;
   font-size: clamp(1rem, 2vw, 1.55rem);
   font-weight: 800;
@@ -181,13 +192,13 @@ html {
   width: min(260px, 56vw);
   height: 1px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.16);
+  background: color-mix(in srgb, var(--tf-cyan) 24%, transparent);
 }
 
 .hero-loader-line span {
   display: block;
   height: 100%;
-  background: #ffffff;
+  background: linear-gradient(90deg, var(--tf-cyan), var(--tf-lime));
   transition: width 260ms ease;
 }
 
@@ -223,9 +234,13 @@ html {
   z-index: 1;
   pointer-events: none;
   content: "";
-  background: linear-gradient(180deg, transparent, rgba(185, 215, 255, 0.1));
+  background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--tf-cyan) 22%, transparent), color-mix(in srgb, var(--tf-lime) 12%, transparent));
   opacity: 0;
   transition: opacity 300ms ease;
+}
+
+.service-card h3 {
+  color: var(--tf-ice);
 }
 
 .service-card:hover::after,
@@ -247,13 +262,13 @@ html {
 
 .terminal-band {
   background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.06), transparent 18%),
-    #050505;
+    linear-gradient(90deg, color-mix(in srgb, var(--tf-cyan) 14%, transparent), transparent 18%),
+    var(--tf-blue-deep);
 }
 
 .terminal-chip {
   align-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid color-mix(in srgb, var(--tf-cyan) 32%, transparent);
   border-radius: 999px;
   display: inline-flex;
   font-family: var(--font-geist-mono), monospace;
@@ -268,17 +283,17 @@ html {
 }
 
 .terminal-panel {
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid color-mix(in srgb, var(--tf-cyan) 30%, transparent);
   border-radius: 2px;
-  background: rgba(5, 5, 5, 0.86);
-  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.42);
+  background: rgba(3, 27, 58, 0.88);
+  box-shadow: 0 32px 90px rgba(0, 41, 102, 0.42);
 }
 
 .terminal-grid-bg {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 34%);
+    linear-gradient(color-mix(in srgb, var(--tf-cyan) 14%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--tf-cyan) 12%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, color-mix(in srgb, var(--tf-lime) 8%, transparent), transparent 34%);
   background-size: 64px 64px, 64px 64px, auto;
 }
 
@@ -297,28 +312,28 @@ html {
 
 .premium-grid {
   background-image:
-    linear-gradient(rgba(103, 232, 249, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(103, 232, 249, 0.08) 1px, transparent 1px),
-    radial-gradient(circle at 72% 24%, rgba(16, 185, 129, 0.18), transparent 26%),
-    radial-gradient(circle at 18% 80%, rgba(34, 211, 238, 0.14), transparent 28%);
+    linear-gradient(color-mix(in srgb, var(--tf-cyan) 18%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--tf-cyan) 14%, transparent) 1px, transparent 1px),
+    radial-gradient(circle at 72% 24%, color-mix(in srgb, var(--tf-lime) 22%, transparent), transparent 26%),
+    radial-gradient(circle at 18% 80%, color-mix(in srgb, var(--tf-cyan) 24%, transparent), transparent 28%);
   background-size: 72px 72px, 72px 72px, auto, auto;
 }
 
 .data-scan {
   background:
-    linear-gradient(180deg, transparent 0 48%, rgba(103, 232, 249, 0.08) 49%, transparent 50%),
-    linear-gradient(90deg, rgba(5, 7, 11, 0.2), transparent 34%, rgba(20, 83, 45, 0.18)),
-    radial-gradient(circle at 18% 24%, rgba(103, 232, 249, 0.16), transparent 30%);
+    linear-gradient(180deg, transparent 0 48%, color-mix(in srgb, var(--tf-cyan) 14%, transparent) 49%, transparent 50%),
+    linear-gradient(90deg, rgba(3, 27, 58, 0.25), transparent 34%, color-mix(in srgb, var(--tf-lime) 16%, transparent)),
+    radial-gradient(circle at 18% 24%, color-mix(in srgb, var(--tf-cyan) 24%, transparent), transparent 30%);
   background-size: 100% 18px, auto, auto;
 }
 
 .truck-hero-grid {
   background:
-    radial-gradient(circle at 15% 18%, rgba(34, 211, 238, 0.18), transparent 28%),
-    radial-gradient(circle at 78% 14%, rgba(56, 189, 248, 0.15), transparent 26%),
-    linear-gradient(180deg, rgba(7, 12, 20, 0.1), #05070b 78%),
-    linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+    radial-gradient(circle at 15% 18%, color-mix(in srgb, var(--tf-cyan) 26%, transparent), transparent 28%),
+    radial-gradient(circle at 78% 14%, color-mix(in srgb, var(--tf-lime) 16%, transparent), transparent 26%),
+    linear-gradient(180deg, rgba(3, 27, 58, 0.1), var(--tf-blue-ink) 78%),
+    linear-gradient(color-mix(in srgb, var(--tf-cyan) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--tf-cyan) 9%, transparent) 1px, transparent 1px);
   background-size: auto, auto, auto, 72px 72px, 72px 72px;
 }
 
@@ -327,16 +342,16 @@ html {
   inset: 0;
   content: "";
   background:
-    linear-gradient(90deg, transparent 0 18%, rgba(103, 232, 249, 0.12) 18.2%, transparent 18.6% 54%, rgba(103, 232, 249, 0.1) 54.2%, transparent 54.7%),
-    radial-gradient(ellipse at center, transparent 0%, rgba(5, 7, 11, 0.7) 72%);
+    linear-gradient(90deg, transparent 0 18%, color-mix(in srgb, var(--tf-cyan) 18%, transparent) 18.2%, transparent 18.6% 54%, color-mix(in srgb, var(--tf-lime) 13%, transparent) 54.2%, transparent 54.7%),
+    radial-gradient(ellipse at center, transparent 0%, rgba(3, 27, 58, 0.7) 72%);
   mask-image: linear-gradient(to bottom, black 0%, black 78%, transparent 100%);
 }
 
 .truck-road {
   background:
-    linear-gradient(90deg, transparent 0 8%, rgba(165, 243, 252, 0.75) 8% 16%, transparent 16% 30%, rgba(165, 243, 252, 0.65) 30% 38%, transparent 38% 52%, rgba(165, 243, 252, 0.65) 52% 60%, transparent 60% 74%, rgba(165, 243, 252, 0.75) 74% 82%, transparent 82%),
-    linear-gradient(180deg, transparent 0 44%, rgba(148, 163, 184, 0.16) 45%, rgba(148, 163, 184, 0.06) 48%, transparent 50%),
-    linear-gradient(180deg, transparent 0%, rgba(15, 23, 42, 0.45) 35%, rgba(15, 23, 42, 0.88) 100%);
+    linear-gradient(90deg, transparent 0 8%, color-mix(in srgb, var(--tf-cyan) 80%, white 20%) 8% 16%, transparent 16% 30%, color-mix(in srgb, var(--tf-cyan) 68%, white 10%) 30% 38%, transparent 38% 52%, color-mix(in srgb, var(--tf-lime) 62%, white 10%) 52% 60%, transparent 60% 74%, color-mix(in srgb, var(--tf-cyan) 80%, white 20%) 74% 82%, transparent 82%),
+    linear-gradient(180deg, transparent 0 44%, color-mix(in srgb, var(--tf-cyan) 18%, transparent) 45%, color-mix(in srgb, var(--tf-cyan) 8%, transparent) 48%, transparent 50%),
+    linear-gradient(180deg, transparent 0%, rgba(3, 27, 58, 0.45) 35%, rgba(3, 27, 58, 0.88) 100%);
   clip-path: polygon(7% 100%, 34% 0, 66% 0, 95% 100%);
   opacity: 0.92;
 }
@@ -348,7 +363,7 @@ html {
   width: 26%;
   height: 100%;
   content: "";
-  border-top: 1px solid rgba(165, 243, 252, 0.2);
+  border-top: 1px solid color-mix(in srgb, var(--tf-cyan) 26%, transparent);
 }
 
 .truck-road::before {

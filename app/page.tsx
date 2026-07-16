@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main className="min-h-screen overflow-x-clip bg-[#030712] text-white">
+    <main className="min-h-screen overflow-x-clip bg-[#031B3A] text-[#F5FCFF]">
       <TruckScrollHero />
       <IntroSection />
       <ProcessSection />
@@ -26,4 +26,3 @@ export default function Home() {
     </main>
   );
 }
-

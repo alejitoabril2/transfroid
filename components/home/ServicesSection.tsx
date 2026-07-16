@@ -4,7 +4,7 @@ import { services } from "./homeData";
 
 export function ServicesSection() {
   return (
-    <FadeSection className="bg-[#030712] px-5 py-20 text-white md:px-10 md:py-28 lg:px-14" >
+    <FadeSection className="bg-[#031B3A] px-5 py-20 text-[#F5FCFF] md:px-10 md:py-28 lg:px-14" >
       <div id="servicios" className="mx-auto max-w-[1540px]">
         <div className="grid gap-8 md:grid-cols-[0.72fr_1.28fr] md:items-end">
           <div>
@@ -21,7 +21,7 @@ export function ServicesSection() {
         <div className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {services.map((service) => (
             <a
-              className="service-card group relative min-h-[430px] overflow-hidden rounded-md border border-white/12 bg-white/6 p-6 focus:outline-none focus:ring-2 focus:ring-white"
+              className="service-card group relative min-h-[430px] overflow-hidden rounded-md border border-[#00D9FF]/20 bg-[#00D9FF]/8 p-6 focus:outline-none focus:ring-2 focus:ring-[#B7FF00]"
               href="#cotizar"
               key={service.title}
             >
@@ -33,9 +33,9 @@ export function ServicesSection() {
                 sizes="(max-width: 768px) 100vw, 25vw"
                 className="object-cover transition duration-700 group-hover:scale-[1.04]"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-[#030712]/42 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#031B3A] via-[#031B3A]/42 to-transparent" />
               <div className="relative z-10 flex h-full min-h-[382px] flex-col justify-end">
-                <span className="mb-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/30 text-lg transition group-hover:bg-white group-hover:text-[#06101f]">
+                <span className="mb-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#00D9FF]/45 text-lg transition group-hover:bg-[#B7FF00] group-hover:text-[#031B3A]">
                   &rarr;
                 </span>
                 <h3 className="text-2xl font-semibold uppercase leading-none">{service.title}</h3>

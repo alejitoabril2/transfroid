@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { getGsap } from "../../lib/animations/gsap";
 import { clamp, drawImageCover, prefersReducedMotion } from "../../lib/animations/scroll";
-import { truckFrames } from "./homeData";
+import { currentHeroFrames } from "./homeData";
 
 const storyCopy = [
   {
@@ -29,12 +29,13 @@ const storyCopy = [
   },
 ];
 
-const CRITICAL_FRAME_COUNT = 12;
+const CRITICAL_FRAME_COUNT = 18;
 
 export function HeroSequence() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const frameRef = useRef(0);
+  const targetFrameRef = useRef(0);
+  const displayedFrameRef = useRef(0);
   const rafRef = useRef<number | null>(null);
   const imagesRef = useRef<(HTMLImageElement | null)[]>([]);
   const loadedRef = useRef(0);
@@ -103,14 +104,27 @@ export function HeroSequence() {
 
     const renderFrame = () => {
       rafRef.current = null;
-      const image = imagesRef.current[frameRef.current] ?? imagesRef.current.find(Boolean);
+      const roundedFrame = Math.min(
+        currentHeroFrames.length - 1,
+        Math.max(0, Math.round(displayedFrameRef.current)),
+      );
+      const image = imagesRef.current[roundedFrame] ?? imagesRef.current.find(Boolean);
 
       if (!image?.complete || !image.naturalWidth) {
         return;
       }
 
-      canvas.dataset.frame = String(frameRef.current + 1);
+      canvas.dataset.frame = String(roundedFrame + 1);
       drawImageCover(context, image, window.innerWidth, window.innerHeight);
+
+      const distance = targetFrameRef.current - displayedFrameRef.current;
+
+      if (Math.abs(distance) > 0.02) {
+        displayedFrameRef.current += distance * 0.34;
+        rafRef.current = window.requestAnimationFrame(renderFrame);
+      } else {
+        displayedFrameRef.current = targetFrameRef.current;
+      }
     };
 
     const requestRender = () => {
@@ -126,7 +140,7 @@ export function HeroSequence() {
 
       const image = new Image();
       image.decoding = "async";
-      image.src = truckFrames[index];
+      image.src = currentHeroFrames[index];
       imagesRef.current[index] = image;
 
       image.onload = () => {
@@ -136,31 +150,32 @@ export function HeroSequence() {
 
         loadedRef.current += 1;
 
-        if (index === 0 || loadedRef.current % 6 === 0 || loadedRef.current === truckFrames.length) {
+        if (index === 0 || loadedRef.current % 8 === 0 || loadedRef.current === currentHeroFrames.length) {
           setLoadedCount(loadedRef.current);
         }
 
-        if (index === frameRef.current || index === 0) {
+        if (index === Math.round(displayedFrameRef.current) || index === 0) {
           requestRender();
         }
       };
     };
 
     const loadRemainingFrames = () => {
-      truckFrames.forEach((_, index) => {
+      currentHeroFrames.forEach((_, index) => {
         if (index >= CRITICAL_FRAME_COUNT) {
-          window.setTimeout(() => loadFrame(index), index * 24);
+          window.setTimeout(() => loadFrame(index), index * 8);
         }
       });
     };
 
-    truckFrames.slice(0, CRITICAL_FRAME_COUNT).forEach((_, index) => loadFrame(index));
+    currentHeroFrames.slice(0, CRITICAL_FRAME_COUNT).forEach((_, index) => loadFrame(index));
     loadRemainingFrames();
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
     if (reducedMotion) {
-      frameRef.current = 0;
+      targetFrameRef.current = 0;
+      displayedFrameRef.current = 0;
       requestRender();
       return () => {
         disposed = true;
@@ -195,12 +210,12 @@ export function HeroSequence() {
       end: "bottom bottom",
       onUpdate: (self) => {
         const frameIndex = Math.min(
-          truckFrames.length - 1,
-          Math.floor(clamp(self.progress) * truckFrames.length),
+          currentHeroFrames.length - 1,
+          Math.floor(clamp(self.progress) * currentHeroFrames.length),
         );
 
-        if (frameIndex !== frameRef.current) {
-          frameRef.current = frameIndex;
+        if (frameIndex !== targetFrameRef.current) {
+          targetFrameRef.current = frameIndex;
           requestRender();
         }
 
@@ -236,21 +251,21 @@ export function HeroSequence() {
   return (
     <section
       ref={sectionRef}
-      className="hero-sequence relative h-[390vh] overflow-clip bg-[#030712] text-white max-md:h-[320svh]"
+      className="hero-sequence relative h-[390vh] overflow-clip bg-[#031B3A] text-[#F5FCFF] max-md:h-[320svh]"
       aria-label="Historia visual de Transfroid controlada por scroll"
     >
       <div className="sticky top-0 h-screen overflow-hidden max-md:h-[100svh]">
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 h-full w-full bg-[#030712]"
+          className="absolute inset-0 h-full w-full bg-[#031B3A]"
           aria-hidden="true"
         />
         <noscript>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/sequences/truck/ezgif-frame-001.jpg"
-            alt="Tractocamion refrigerado Transfroid en operacion logistica"
             className="absolute inset-0 h-full w-full object-cover"
+            src="/sequences/current-hero/frame-001.jpg"
+            alt="Tractocamion refrigerado Transfroid en operacion logistica"
           />
         </noscript>
 
@@ -261,8 +276,8 @@ export function HeroSequence() {
         </div>
 
         <div data-hero-overlay className="absolute inset-0 opacity-50 transition-opacity">
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(3,7,18,0.86)_0%,rgba(3,7,18,0.52)_34%,rgba(3,7,18,0.12)_62%,rgba(3,7,18,0.58)_100%)]" />
-          <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#030712] via-[#030712]/62 to-transparent" />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(3,27,58,0.82)_0%,rgba(3,27,58,0.48)_34%,rgba(0,217,255,0.08)_62%,rgba(3,27,58,0.52)_100%)]" />
+          <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#031B3A] via-[#031B3A]/62 to-transparent" />
         </div>
 
         <SiteNav isSolid={isNavSolid || isMenuOpen} isMenuOpen={isMenuOpen} onMenu={() => setIsMenuOpen((open) => !open)} />
@@ -284,7 +299,7 @@ export function HeroSequence() {
                 </p>
                 {item.cta ? (
                   <a
-                    className="pointer-events-auto mt-8 inline-flex min-h-12 items-center rounded-full bg-white px-6 text-sm font-bold uppercase tracking-[0.14em] text-[#06101f] transition hover:bg-[#b8d9ff] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#06101f]"
+                    className="pointer-events-auto mt-8 inline-flex min-h-12 items-center rounded-full bg-[#B7FF00] px-6 text-sm font-bold uppercase tracking-[0.14em] text-[#031B3A] transition hover:bg-[#00D9FF] focus:outline-none focus:ring-2 focus:ring-[#B7FF00] focus:ring-offset-2 focus:ring-offset-[#031B3A]"
                     href="#cotizar"
                   >
                     Solicitar servicio
@@ -297,7 +312,7 @@ export function HeroSequence() {
 
         <div className="absolute bottom-5 left-5 right-5 z-20 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-white/55 md:left-10 md:right-10">
           <span>{loadedCount < CRITICAL_FRAME_COUNT ? "Cargando escena" : "Scroll para avanzar"}</span>
-          <span>{Math.min(loadedCount, truckFrames.length)} / {truckFrames.length} frames</span>
+          <span>{Math.min(loadedCount, currentHeroFrames.length)} / {currentHeroFrames.length} frames</span>
         </div>
 
         {loaderPhase !== "done" ? (
@@ -348,13 +363,13 @@ function SiteNav({
         </nav>
         <div className="flex items-center gap-3">
           <a
-            className="hidden min-h-11 items-center rounded-full bg-white px-5 font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#06101f] transition hover:bg-[#b8d9ff] focus:outline-none focus:ring-2 focus:ring-white md:inline-flex"
+            className="hidden min-h-11 items-center rounded-full bg-[#B7FF00] px-5 font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#031B3A] transition hover:bg-[#00D9FF] focus:outline-none focus:ring-2 focus:ring-[#B7FF00] md:inline-flex"
             href="#cotizar"
           >
             Solicitar servicio
           </a>
           <button
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/30 text-white transition hover:bg-white hover:text-[#06101f] focus:outline-none focus:ring-2 focus:ring-white md:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#00D9FF]/45 text-white transition hover:bg-[#00D9FF] hover:text-[#031B3A] focus:outline-none focus:ring-2 focus:ring-[#B7FF00] md:hidden"
             type="button"
             aria-label={isMenuOpen ? "Cerrar menu" : "Abrir menu"}
             aria-expanded={isMenuOpen}
@@ -373,7 +388,7 @@ function SiteNav({
             {label}
           </a>
         ))}
-        <a className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#06101f]" href="#cotizar" onClick={onMenu}>
+        <a className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-[#B7FF00] px-6 font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#031B3A]" href="#cotizar" onClick={onMenu}>
           Solicitar servicio
         </a>
       </div>

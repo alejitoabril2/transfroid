@@ -131,6 +131,10 @@ html {
   will-change: opacity, transform, filter;
 }
 
+.hero-copy {
+  will-change: transform;
+}
+
 .hero-loader {
   position: absolute;
   inset: 0;
@@ -222,6 +226,10 @@ html {
 
 .process-number {
   font-variant-numeric: tabular-nums;
+}
+
+[data-process-copy] {
+  will-change: opacity, transform, filter;
 }
 
 .service-card {

@@ -30,12 +30,16 @@ const storyCopy = [
 ];
 
 const CRITICAL_FRAME_COUNT = 18;
+const FRAME_SMOOTHING = 9.5;
+const MOBILE_FRAME_SMOOTHING = 24;
 
 export function HeroSequence() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const targetFrameRef = useRef(0);
   const displayedFrameRef = useRef(0);
+  const lastRenderedFrameRef = useRef(-1);
+  const lastFrameTimeRef = useRef(0);
   const rafRef = useRef<number | null>(null);
   const imagesRef = useRef<(HTMLImageElement | null)[]>([]);
   const loadedRef = useRef(0);
@@ -99,36 +103,55 @@ export function HeroSequence() {
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      lastRenderedFrameRef.current = -1;
       renderFrame();
     };
 
-    const renderFrame = () => {
+    const renderFrame = (timestamp = performance.now()) => {
       rafRef.current = null;
+      const elapsedSeconds = lastFrameTimeRef.current
+        ? Math.min((timestamp - lastFrameTimeRef.current) / 1000, 0.064)
+        : 1 / 60;
+      lastFrameTimeRef.current = timestamp;
+      const distance = targetFrameRef.current - displayedFrameRef.current;
+      const frameSmoothing = isMobile ? MOBILE_FRAME_SMOOTHING : FRAME_SMOOTHING;
+      const smoothingAmount = 1 - Math.exp(-frameSmoothing * elapsedSeconds);
+
+      if (Math.abs(distance) > 0.02) {
+        displayedFrameRef.current += distance * smoothingAmount;
+      } else {
+        displayedFrameRef.current = targetFrameRef.current;
+      }
+
       const roundedFrame = Math.min(
         currentHeroFrames.length - 1,
         Math.max(0, Math.round(displayedFrameRef.current)),
       );
-      const image = imagesRef.current[roundedFrame] ?? imagesRef.current.find(Boolean);
 
-      if (!image?.complete || !image.naturalWidth) {
-        return;
+      if (roundedFrame !== lastRenderedFrameRef.current) {
+        const image = imagesRef.current[roundedFrame] ?? imagesRef.current.find(Boolean);
+
+        if (!image?.complete || !image.naturalWidth) {
+          if (Math.abs(targetFrameRef.current - displayedFrameRef.current) > 0.02) {
+            rafRef.current = window.requestAnimationFrame(renderFrame);
+          }
+
+          return;
+        }
+
+        canvas.dataset.frame = String(roundedFrame + 1);
+        drawImageCover(context, image, window.innerWidth, window.innerHeight);
+        lastRenderedFrameRef.current = roundedFrame;
       }
 
-      canvas.dataset.frame = String(roundedFrame + 1);
-      drawImageCover(context, image, window.innerWidth, window.innerHeight);
-
-      const distance = targetFrameRef.current - displayedFrameRef.current;
-
-      if (Math.abs(distance) > 0.02) {
-        displayedFrameRef.current += distance * 0.34;
+      if (Math.abs(targetFrameRef.current - displayedFrameRef.current) > 0.02) {
         rafRef.current = window.requestAnimationFrame(renderFrame);
-      } else {
-        displayedFrameRef.current = targetFrameRef.current;
       }
     };
 
     const requestRender = () => {
       if (rafRef.current === null) {
+        lastFrameTimeRef.current = 0;
         rafRef.current = window.requestAnimationFrame(renderFrame);
       }
     };
@@ -176,6 +199,7 @@ export function HeroSequence() {
     if (reducedMotion) {
       targetFrameRef.current = 0;
       displayedFrameRef.current = 0;
+      lastRenderedFrameRef.current = -1;
       requestRender();
       return () => {
         disposed = true;
@@ -191,27 +215,33 @@ export function HeroSequence() {
         trigger: section,
         start: "top top",
         end: "bottom bottom",
-        scrub: isMobile ? 0.12 : 0.55,
+        scrub: isMobile ? 0.22 : 0.68,
       },
     });
 
     heroTimeline
-      .fromTo("[data-hero-panel='0']", { autoAlpha: 1, y: 0, filter: "blur(0px)" }, { autoAlpha: 0, y: -34, filter: "blur(5px)", duration: 0.18 }, 0.18)
-      .fromTo("[data-hero-panel='1']", { autoAlpha: 0, y: 34, filter: "blur(5px)" }, { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.16 }, 0.28)
-      .to("[data-hero-panel='1']", { autoAlpha: 0, y: -34, filter: "blur(5px)", duration: 0.15 }, 0.48)
-      .fromTo("[data-hero-panel='2']", { autoAlpha: 0, y: 34, filter: "blur(5px)" }, { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.16 }, 0.58)
-      .to("[data-hero-panel='2']", { autoAlpha: 0, y: -34, filter: "blur(5px)", duration: 0.15 }, 0.76)
-      .fromTo("[data-hero-panel='3']", { autoAlpha: 0, y: 34, filter: "blur(5px)" }, { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.16 }, 0.84)
-      .to("[data-hero-overlay]", { opacity: 0.72, duration: 1 }, 0);
+      .set("[data-hero-panel]", { transformOrigin: "left bottom" }, 0)
+      .fromTo("[data-hero-panel='0']", { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)" }, { autoAlpha: 0, y: -24, scale: 0.992, filter: "blur(3px)", duration: 0.26, ease: "power2.inOut" }, 0.18)
+      .fromTo("[data-hero-panel='1']", { autoAlpha: 0, y: 24, scale: 0.985, filter: "blur(3px)" }, { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.24, ease: "power2.out" }, 0.28)
+      .to("[data-hero-panel='1']", { autoAlpha: 0, y: -22, scale: 0.992, filter: "blur(3px)", duration: 0.22, ease: "power2.inOut" }, 0.48)
+      .fromTo("[data-hero-panel='2']", { autoAlpha: 0, y: 24, scale: 0.985, filter: "blur(3px)" }, { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.24, ease: "power2.out" }, 0.58)
+      .to("[data-hero-panel='2']", { autoAlpha: 0, y: -22, scale: 0.992, filter: "blur(3px)", duration: 0.2, ease: "power2.inOut" }, 0.76)
+      .fromTo("[data-hero-panel='3']", { autoAlpha: 0, y: 24, scale: 0.985, filter: "blur(3px)" }, { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.24, ease: "power2.out" }, 0.83)
+      .fromTo("[data-hero-overlay]", { opacity: 0.38 }, { opacity: 0.7, duration: 1, ease: "none" }, 0)
+      .fromTo("[data-hero-copy]", { yPercent: 0 }, { yPercent: -5, duration: 1, ease: "none" }, 0)
+      .fromTo("[data-hero-exit]", { autoAlpha: 0, yPercent: 18 }, { autoAlpha: 1, yPercent: 0, duration: 0.2, ease: "power2.out" }, 0.78)
+      .to("[data-hero-copy]", { autoAlpha: 0.18, yPercent: -9, filter: "blur(2px)", duration: 0.12, ease: "power2.out" }, 0.9)
+      .to("[data-hero-footer]", { autoAlpha: 0, y: 12, duration: 0.08, ease: "power2.out" }, 0.9);
 
     const canvasTrigger = ScrollTrigger.create({
       trigger: section,
       start: "top top",
       end: "bottom bottom",
       onUpdate: (self) => {
+        const frameProgress = clamp(self.progress / (isMobile ? 0.82 : 0.94));
         const frameIndex = Math.min(
           currentHeroFrames.length - 1,
-          Math.floor(clamp(self.progress) * currentHeroFrames.length),
+          Math.round(frameProgress * (currentHeroFrames.length - 1)),
         );
 
         if (frameIndex !== targetFrameRef.current) {
@@ -225,7 +255,7 @@ export function HeroSequence() {
     });
 
     const parallaxTween = gsap.to("[data-hero-parallax]", {
-      yPercent: -9,
+      yPercent: -6,
       ease: "none",
       scrollTrigger: {
         trigger: section,
@@ -282,7 +312,7 @@ export function HeroSequence() {
 
         <SiteNav isSolid={isNavSolid || isMenuOpen} isMenuOpen={isMenuOpen} onMenu={() => setIsMenuOpen((open) => !open)} />
 
-        <div className="hero-copy pointer-events-none absolute inset-x-0 bottom-[11vh] z-20 px-5 md:bottom-[12vh] md:px-10 lg:px-14">
+        <div data-hero-copy className="hero-copy pointer-events-none absolute inset-x-0 bottom-[11vh] z-20 px-5 md:bottom-[12vh] md:px-10 lg:px-14">
           <div className="relative max-w-[840px]">
             {storyCopy.map((item, index) => (
               <div
@@ -310,7 +340,20 @@ export function HeroSequence() {
           </div>
         </div>
 
-        <div className="absolute bottom-5 left-5 right-5 z-20 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-white/55 md:left-10 md:right-10">
+        <div data-hero-exit className="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-[58svh] opacity-0">
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(245,252,255,0)_0%,rgba(3,27,58,0.18)_18%,rgba(0,217,255,0.12)_38%,rgba(245,252,255,0.88)_76%,#F5FCFF_100%)]" />
+          <div className="absolute inset-x-5 bottom-[18vh] h-px overflow-hidden bg-[#0077FF]/20 md:inset-x-10 lg:inset-x-14">
+            <span className="block h-full w-1/2 bg-gradient-to-r from-[#00D9FF] via-[#B7FF00] to-transparent" />
+          </div>
+          <div className="absolute inset-x-5 bottom-[9vh] flex items-end justify-between gap-6 md:inset-x-10 lg:inset-x-14">
+            <p className="max-w-[18rem] font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#0077FF]">
+              La ruta continua en una operacion coordinada
+            </p>
+            <div className="hidden h-24 w-px bg-gradient-to-b from-[#00D9FF] to-transparent md:block" />
+          </div>
+        </div>
+
+        <div data-hero-footer className="absolute bottom-5 left-5 right-5 z-20 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-white/55 md:left-10 md:right-10">
           <span>{loadedCount < CRITICAL_FRAME_COUNT ? "Cargando escena" : "Scroll para avanzar"}</span>
           <span>{Math.min(loadedCount, currentHeroFrames.length)} / {currentHeroFrames.length} frames</span>
         </div>

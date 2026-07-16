@@ -8,6 +8,8 @@ import { processSteps } from "./homeData";
 
 export function ProcessSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const activeStepRef = useRef(0);
   const [activeStep, setActiveStep] = useState(0);
 
   useEffect(() => {
@@ -24,7 +26,13 @@ export function ProcessSection() {
       end: "bottom bottom",
       onUpdate: (self) => {
         const next = Math.min(processSteps.length - 1, Math.floor(self.progress * processSteps.length));
-        setActiveStep((current) => (current === next ? current : next));
+
+        if (next === activeStepRef.current) {
+          return;
+        }
+
+        activeStepRef.current = next;
+        setActiveStep(next);
       },
     });
 
@@ -35,20 +43,46 @@ export function ProcessSection() {
 
   const active = processSteps[activeStep];
 
+  useEffect(() => {
+    const content = contentRef.current;
+
+    if (!content || prefersReducedMotion()) {
+      return;
+    }
+
+    const { gsap } = getGsap();
+    const tween = gsap.fromTo(
+      content.querySelectorAll("[data-process-copy]"),
+      { autoAlpha: 0, y: 18, filter: "blur(3px)" },
+      {
+        autoAlpha: 1,
+        y: 0,
+        filter: "blur(0px)",
+        duration: 0.52,
+        stagger: 0.045,
+        ease: "power3.out",
+      },
+    );
+
+    return () => {
+      tween.kill();
+    };
+  }, [activeStep]);
+
   return (
     <section id="proceso" ref={sectionRef} className="relative h-[420svh] bg-[#031B3A] text-[#F5FCFF] md:h-[440vh]">
       <div className="sticky top-0 mx-auto grid h-[100svh] max-w-[1540px] grid-rows-[auto_1fr] gap-5 px-5 pb-8 pt-24 md:h-screen md:grid-cols-[0.78fr_1.22fr] md:grid-rows-1 md:items-center md:gap-10 md:px-10 md:py-16 lg:px-14">
-        <div className="relative z-10">
-          <p className="terminal-label">Proceso operativo</p>
+        <div ref={contentRef} className="relative z-10">
+          <p data-process-copy className="terminal-label">Proceso operativo</p>
           <div className="mt-4 overflow-hidden md:mt-8">
-            <p className="process-number text-[clamp(3.2rem,9vw,9.5rem)] font-semibold leading-none tracking-[-0.04em] text-[#00D9FF]/24">
+            <p data-process-copy className="process-number text-[clamp(3.2rem,9vw,9.5rem)] font-semibold leading-none tracking-[-0.04em] text-[#00D9FF]/24">
               {active.number}
             </p>
           </div>
-          <h2 className="mt-1 text-[clamp(1.9rem,4.4vw,4.8rem)] font-semibold uppercase leading-[0.94]">
+          <h2 data-process-copy className="mt-1 text-[clamp(1.9rem,4.4vw,4.8rem)] font-semibold uppercase leading-[0.94]">
             {active.title}
           </h2>
-          <p className="mt-4 max-w-lg text-sm leading-6 text-white/68 md:mt-6 md:text-lg md:leading-8">{active.text}</p>
+          <p data-process-copy className="mt-4 max-w-lg text-sm leading-6 text-white/68 md:mt-6 md:text-lg md:leading-8">{active.text}</p>
           <div className="mt-5 h-px bg-white/14 md:mt-10">
             <div
               className="h-px bg-[#B7FF00] transition-all duration-500"
@@ -62,7 +96,10 @@ export function ProcessSection() {
                 key={step.number}
                 type="button"
                 aria-label={`Ver paso ${step.number}: ${step.title}`}
-                onClick={() => setActiveStep(index)}
+                onClick={() => {
+                  activeStepRef.current = index;
+                  setActiveStep(index);
+                }}
               />
             ))}
           </div>
@@ -77,7 +114,7 @@ export function ProcessSection() {
               fill
               unoptimized
               sizes="(max-width: 768px) 100vw, 58vw"
-              className={`object-cover transition duration-700 ${activeStep === index ? "scale-100 opacity-100" : "scale-105 opacity-0"}`}
+              className={`object-cover transition duration-[1100ms] ease-out ${activeStep === index ? "scale-100 opacity-100" : "scale-[1.02] opacity-0"}`}
             />
           ))}
           <div className="absolute inset-0 bg-gradient-to-t from-[#031B3A]/76 via-transparent to-transparent" />

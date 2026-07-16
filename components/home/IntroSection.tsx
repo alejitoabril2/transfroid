@@ -2,7 +2,8 @@ import { RevealText } from "../motion/RevealText";
 
 export function IntroSection() {
   return (
-    <section className="bg-[#F5FCFF] px-5 py-20 text-[#031B3A] md:px-10 md:py-28 lg:px-14">
+    <section className="relative overflow-hidden bg-[#F5FCFF] px-5 pb-20 pt-14 text-[#031B3A] md:px-10 md:pb-28 md:pt-20 lg:px-14">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-[radial-gradient(circle_at_18%_0%,rgba(0,217,255,0.28),transparent_34%),linear-gradient(180deg,rgba(3,27,58,0.08),rgba(245,252,255,0))]" />
       <div className="mx-auto max-w-[1540px]">
         <p className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-[#0077FF]">
           Logistica que mantiene su promesa

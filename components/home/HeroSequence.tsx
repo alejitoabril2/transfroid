@@ -46,8 +46,6 @@ export function HeroSequence() {
   const rafRef = useRef<number | null>(null);
   const imagesRef = useRef<(HTMLImageElement | null)[]>([]);
   const loadedRef = useRef(0);
-  const [isNavSolid, setIsNavSolid] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [loadedCount, setLoadedCount] = useState(0);
   const [loaderPhase, setLoaderPhase] = useState<"loading" | "opening" | "done">("loading");
 
@@ -281,8 +279,6 @@ export function HeroSequence() {
           requestRender();
         }
 
-        const nextNavState = self.progress > 0.08;
-        setIsNavSolid((current) => (current === nextNavState ? current : nextNavState));
       },
     });
 
@@ -356,8 +352,6 @@ export function HeroSequence() {
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(3,27,58,0.82)_0%,rgba(3,27,58,0.48)_34%,rgba(0,217,255,0.08)_62%,rgba(3,27,58,0.52)_100%)]" />
           <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#031B3A] via-[#031B3A]/62 to-transparent" />
         </div>
-
-        <SiteNav isSolid={isNavSolid || isMenuOpen} isMenuOpen={isMenuOpen} onMenu={() => setIsMenuOpen((open) => !open)} />
 
         <div data-hero-copy className="hero-copy pointer-events-none absolute inset-x-0 top-[18svh] z-20 px-5 md:top-[16vh] md:px-10 lg:px-14">
           <div className="relative max-w-[520px]">
@@ -436,7 +430,7 @@ function HeroCta() {
     <div className="pointer-events-auto mt-8 flex flex-wrap items-center gap-3">
       <a
         className="inline-flex min-h-12 items-center rounded-full bg-[#B7FF00] px-6 text-sm font-bold uppercase tracking-[0.14em] text-[#031B3A] transition hover:bg-[#00D9FF] focus:outline-none focus:ring-2 focus:ring-[#B7FF00] focus:ring-offset-2 focus:ring-offset-[#031B3A]"
-        href="#cotizar"
+        href="/reservar"
       >
         Cotizar ahora
       </a>
@@ -451,83 +445,5 @@ function HeroCta() {
         </a>
       ) : null}
     </div>
-  );
-}
-
-function SiteNav({
-  isSolid,
-  isMenuOpen,
-  onMenu,
-}: {
-  isSolid: boolean;
-  isMenuOpen: boolean;
-  onMenu: () => void;
-}) {
-  const navItems = [
-    ["Proceso", "#proceso"],
-    ["Servicios", "#servicios"],
-    ["Flota", "#flota"],
-  ];
-
-  return (
-    <header
-      className={`site-nav fixed left-0 right-0 top-0 z-50 ${isSolid ? "site-nav-solid" : ""}`}
-      onKeyDown={(event) => {
-        if (event.key === "Escape" && isMenuOpen) onMenu();
-      }}
-    >
-      <div className="mx-auto flex max-w-[1540px] items-center justify-between px-5 py-5 transition-all duration-300 md:px-10 lg:px-14">
-        <a
-          className="rounded-sm focus:outline-none focus:ring-2 focus:ring-[#B7FF00]"
-          href="#"
-          aria-label="Transfroid FAM SAS, volver al inicio"
-        >
-          <BrandLogo priority compact alt="" />
-        </a>
-        <nav className="hidden items-center gap-8 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-white/72 md:flex">
-          {navItems.map(([label, href]) => (
-            <a className="transition hover:text-white focus:outline-none focus:ring-2 focus:ring-white" href={href} key={href}>
-              {label}
-            </a>
-          ))}
-        </nav>
-        <div className="flex items-center gap-3">
-          <a
-            className="hidden min-h-11 items-center rounded-full bg-[#B7FF00] px-5 font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#031B3A] transition hover:bg-[#00D9FF] focus:outline-none focus:ring-2 focus:ring-[#B7FF00] md:inline-flex"
-            href="#cotizar"
-          >
-            Solicitar servicio
-          </a>
-          <button
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#00D9FF]/45 text-white transition hover:bg-[#00D9FF] hover:text-[#031B3A] focus:outline-none focus:ring-2 focus:ring-[#B7FF00] md:hidden"
-            type="button"
-            aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
-            aria-expanded={isMenuOpen}
-            aria-controls="mobile-navigation"
-            onClick={onMenu}
-          >
-            <span className="relative h-3.5 w-5">
-              <span className={`absolute left-0 top-0 h-px w-5 bg-current transition ${isMenuOpen ? "translate-y-[7px] rotate-45" : ""}`} />
-              <span className={`absolute bottom-0 left-0 h-px w-5 bg-current transition ${isMenuOpen ? "-translate-y-[7px] -rotate-45" : ""}`} />
-            </span>
-          </button>
-        </div>
-      </div>
-      <div
-        id="mobile-navigation"
-        className={`mobile-nav-panel md:hidden ${isMenuOpen ? "mobile-nav-panel-open" : ""}`}
-        aria-hidden={!isMenuOpen}
-        inert={!isMenuOpen}
-      >
-        {navItems.map(([label, href]) => (
-          <a className="border-b border-white/12 py-5 text-3xl font-semibold uppercase leading-none" href={href} key={href} onClick={onMenu}>
-            {label}
-          </a>
-        ))}
-        <a className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-[#B7FF00] px-6 font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#031B3A]" href="#cotizar" onClick={onMenu}>
-          Solicitar servicio
-        </a>
-      </div>
-    </header>
   );
 }

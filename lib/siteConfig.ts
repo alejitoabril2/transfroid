@@ -6,6 +6,9 @@ const whatsappMessage =
 export const siteConfig = {
   name: "TRANSFROID FAM SAS",
   email: "comercial@transfroid.com",
+  contactEmail: "reservas@transfroid.com",
+  phoneDisplay: "+57 300 000 0000",
+  phoneHref: "+573000000000",
   whatsappNumber: whatsappNumber || null,
   whatsappHref: whatsappNumber
     ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`

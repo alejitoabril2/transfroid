@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { SiteFooter } from "../components/layout/SiteFooter";
+import { SiteNav } from "../components/layout/SiteNav";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -10,10 +12,10 @@ export const metadata: Metadata = {
     "Transporte terrestre de carga refrigerada en Colombia con cadena de frío, trazabilidad, seguridad vial y control operativo.",
   icons: {
     icon: [
-      { url: "/images/transfroid/brand/transfroid-mark-64.png", sizes: "64x64", type: "image/png" },
+      { url: "/images/transfroid/brand/transfroid-favicon-64.png", sizes: "64x64", type: "image/png" },
     ],
-    shortcut: "/images/transfroid/brand/transfroid-mark-64.png",
-    apple: "/images/transfroid/brand/transfroid-apple-touch.png",
+    shortcut: "/images/transfroid/brand/transfroid-favicon-64.png",
+    apple: "/images/transfroid/brand/transfroid-apple-touch-transport.png",
   },
 };
 
@@ -24,7 +26,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body>
+        <SiteNav />
+        {children}
+        <SiteFooter />
+      </body>
     </html>
   );
 }

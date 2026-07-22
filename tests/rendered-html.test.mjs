@@ -60,17 +60,36 @@ test("uses the real brand asset and all operational imagery", async () => {
 
   await Promise.all(assets.map((asset) => access(new URL(asset, root))));
   const logo = await read("components/brand/BrandLogo.tsx");
-  assert.match(logo, /transfroid-logo-vertical-768\.webp/);
+  assert.match(logo, /transfroid-logo-transport-transparent\.png/);
   assert.doesNotMatch(logo, />\s*Transfroid\s*</i);
 });
 
 test("does not publish an invented WhatsApp destination", async () => {
   const config = await read("lib/siteConfig.ts");
-  const cta = await read("components/home/FinalCTA.tsx");
+  const form = await read("components/home/ReservationForm.tsx");
   assert.match(config, /NEXT_PUBLIC_TRANSFROID_WHATSAPP/);
   assert.match(config, /replace\(\/\\D\/g, ""\)/);
-  assert.match(cta, /siteConfig\.whatsappHref \?/);
-  assert.doesNotMatch(cta, /href="https:\/\/wa\.me\//);
+  assert.match(form, /siteConfig\.whatsappHref \?/);
+  assert.doesNotMatch(form, /href="https:\/\/wa\.me\//);
+});
+
+test("shares the navigation and footer across the site and keeps the reservation route usable", async () => {
+  const [layout, nav, footer, reservation, form] = await Promise.all([
+    read("app/layout.tsx"),
+    read("components/layout/SiteNav.tsx"),
+    read("components/layout/SiteFooter.tsx"),
+    read("app/reservar/page.tsx"),
+    read("components/home/ReservationForm.tsx"),
+  ]);
+
+  assert.match(layout, /<SiteNav \/>/);
+  assert.match(layout, /<SiteFooter \/>/);
+  assert.match(nav, /aria-controls="mobile-navigation"/);
+  assert.match(nav, /event\.key === "Escape"/);
+  assert.match(footer, /siteConfig\.contactEmail/);
+  assert.match(reservation, /<ReservationForm \/>/);
+  assert.match(form, /name="mensaje"/);
+  assert.match(form, /aria-live="polite"/);
 });
 
 test("keeps motion alternatives and accessible process controls", async () => {

@@ -34,9 +34,9 @@ export function FinalCTA() {
         <div className="mt-9 flex flex-col gap-3 sm:flex-row">
           <a
             className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#B7FF00] px-6 font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#031B3A] transition hover:bg-[#00D9FF] focus:outline-none focus:ring-2 focus:ring-[#B7FF00]"
-            href={`mailto:${siteConfig.email}?subject=Solicitud%20de%20servicio%20Transfroid`}
+            href="/reservar"
           >
-            Solicitar servicio
+            Reservar ahora
           </a>
           {siteConfig.whatsappHref ? (
             <a
@@ -47,15 +47,7 @@ export function FinalCTA() {
             >
               Hablar por WhatsApp
             </a>
-          ) : (
-            <span
-              className="inline-flex min-h-12 cursor-not-allowed items-center justify-center rounded-full border border-white/20 px-6 font-mono text-xs font-bold uppercase tracking-[0.14em] text-white/45"
-              aria-disabled="true"
-              title="Canal de WhatsApp pendiente de configuración"
-            >
-              Hablar por WhatsApp
-            </span>
-          )}
+          ) : null}
         </div>
       </div>
     </section>

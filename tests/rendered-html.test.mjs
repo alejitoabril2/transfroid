@@ -1,87 +1,113 @@
 import assert from "node:assert/strict";
-import { access, readFile, readdir } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
-const developmentPreviewMeta =
-  /<meta(?=[^>]*\bname=["']codex-preview["'])(?=[^>]*\bcontent=["']development["'])[^>]*>/i;
-const templateRoot = new URL("../", import.meta.url);
-const previewRoot = new URL("../app/_sites-preview/", import.meta.url);
+const root = new URL("../", import.meta.url);
 
-async function render() {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
+const read = (path) => readFile(new URL(path, root), "utf8");
 
-  return worker.fetch(
-    new Request("http://localhost/", {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
-  );
-}
+test("assembles the complete homepage in the intended order", async () => {
+  const page = await read("app/page.tsx");
+  const expected = [
+    "<TruckScrollHero />",
+    "<IntroSection />",
+    "<ProcessSection />",
+    "<ServicesSection />",
+    "<MetricsSection />",
+    "<FleetSection />",
+    "<FinalCTA />",
+  ];
 
-test("server-renders the starter loading skeleton", async () => {
-  const response = await render();
-  assert.equal(response.status, 200);
-  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
+  let previous = -1;
+  for (const component of expected) {
+    const current = page.indexOf(component);
+    assert.ok(current > previous, `${component} debe conservar el orden editorial`);
+    previous = current;
+  }
 
-  const html = await response.text();
-  assert.match(html, developmentPreviewMeta);
-  assert.match(html, /<title>Your site is taking shape<\/title>/i);
-  assert.match(html, /Codex is working/);
-  assert.match(html, /Your site is taking shape/);
-  assert.match(html, /Codex is building the first version/);
-  assert.match(html, /react-loading-skeleton/);
-  assert.match(html, /role="status"/);
+  assert.match(page, /openGraph:/);
+  assert.match(page, /twitter:/);
+  assert.match(page, /transporte refrigerado Colombia/);
 });
 
-test("keeps the loading skeleton scoped and disposable", async () => {
-  const [preview, css, page, layout, packageJson, files] = await Promise.all([
-    readFile(new URL("SkeletonPreview.tsx", previewRoot), "utf8"),
-    readFile(new URL("preview.css", previewRoot), "utf8"),
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../package.json", import.meta.url), "utf8"),
-    readdir(previewRoot),
+test("uses one H1 and the approved Spanish hero story", async () => {
+  const hero = await read("components/home/HeroSequence.tsx");
+  assert.equal(hero.match(/<h1\b/g)?.length, 1);
+  assert.match(hero, /MOVEMOS TU CARGA\. PROTEGEMOS SU TEMPERATURA\./);
+  assert.match(hero, /Transportamos tu carga con responsabilidad, oportunidad y preservación de la cadena de frío\./);
+  assert.match(hero, /SEGURIDAD Y CONTROL EN CADA KILÓMETRO\./);
+  assert.match(hero, /Precisión, frescura intacta y tecnología para preservar la integridad de su mercancía\./);
+  assert.match(hero, /TU TRANQUILIDAD ES NUESTRO COMPROMISO EN CADA KILÓMETRO\./);
+  assert.match(hero, /DE LA CARRETERA AL CENTRO LOGÍSTICO\./);
+  assert.doesNotMatch(hero, /warehouse/i);
+});
+
+test("uses the real brand asset and all operational imagery", async () => {
+  const assets = [
+    "public/images/transfroid/brand/transfroid-logo-vertical-768.webp",
+    "public/images/transfroid/hero/hero-desktop-master.webp",
+    "public/images/transfroid/hero/hero-mobile-master.webp",
+    "public/images/transfroid/process/recoleccion.webp",
+    "public/images/transfroid/process/conservacion.webp",
+    "public/images/transfroid/process/trazabilidad.webp",
+    "public/images/transfroid/process/entrega.webp",
+    "public/images/transfroid/fleet/mula.webp",
+    "public/images/transfroid/fleet/doble-troque.webp",
+    "public/images/transfroid/fleet/sencillo.webp",
+    "public/images/transfroid/fleet/turbo.webp",
+    "public/images/transfroid/cta/cta-final-desktop.webp",
+  ];
+
+  await Promise.all(assets.map((asset) => access(new URL(asset, root))));
+  const logo = await read("components/brand/BrandLogo.tsx");
+  assert.match(logo, /transfroid-logo-vertical-768\.webp/);
+  assert.doesNotMatch(logo, />\s*Transfroid\s*</i);
+});
+
+test("does not publish an invented WhatsApp destination", async () => {
+  const config = await read("lib/siteConfig.ts");
+  const cta = await read("components/home/FinalCTA.tsx");
+  assert.match(config, /NEXT_PUBLIC_TRANSFROID_WHATSAPP/);
+  assert.match(config, /replace\(\/\\D\/g, ""\)/);
+  assert.match(cta, /siteConfig\.whatsappHref \?/);
+  assert.doesNotMatch(cta, /href="https:\/\/wa\.me\//);
+});
+
+test("keeps motion alternatives and accessible process controls", async () => {
+  const [styles, process, data, fleet] = await Promise.all([
+    read("app/globals.css"),
+    read("components/home/ProcessSection.tsx"),
+    read("components/home/homeData.ts"),
+    read("components/home/FleetSection.tsx"),
   ]);
 
-  assert.deepEqual(files.sort(), ["SkeletonPreview.tsx", "preview.css"]);
-  assert.match(preview, /from "react-loading-skeleton"/);
-  assert.match(preview, /baseColor="#eceae7"/);
-  assert.match(preview, /highlightColor="#f9f8f6"/);
-  assert.match(preview, /duration=\{2\.8\}/);
-  assert.match(preview, /sites-skeleton-search-placeholder/);
-  assert.match(packageJson, /"react-loading-skeleton": "3\.5\.0"/);
+  assert.match(styles, /prefers-reduced-motion:\s*reduce/);
+  assert.match(process, /role="tablist"/);
+  assert.match(process, /aria-selected=/);
+  assert.match(data, /Transporte refrigerado/);
+  assert.match(data, /Seguimiento y cumplimiento/);
+  assert.match(fleet, /fleetImages\.map/);
+  assert.doesNotMatch(fleet, /role="tablist"/);
+});
 
-  const shellIndex = preview.indexOf('className="sites-skeleton-shell"');
-  const statusIndex = preview.indexOf('className="sites-skeleton-status"');
-  assert.ok(shellIndex >= 0 && statusIndex > shellIndex);
-  assert.match(css, /position:\s*fixed/);
-  assert.match(css, /inset:\s*0/);
-  assert.match(css, /opacity:\s*0\.52/);
-  assert.match(css, /prefers-reduced-motion:\s*reduce/);
-  assert.doesNotMatch(css, /#020617|canvas|pets|progress/i);
-  assert.doesNotMatch(
-    preview,
-    /loading-spinner|status-mark|status-progress|canvas|cookie|random/i,
-  );
+test("keeps PDF-approved process, service, and fleet content", async () => {
+  const [data, intro, process, fleet, assets] = await Promise.all([
+    read("components/home/homeData.ts"),
+    read("components/home/IntroSection.tsx"),
+    read("components/home/ProcessSection.tsx"),
+    read("components/home/FleetSection.tsx"),
+    read("components/home/transfroidImageAssets.ts"),
+  ]);
 
-  assert.match(page, /export const metadata:\s*Metadata/);
-  assert.match(page, /"codex-preview": "development"/);
-  assert.match(page, /<SkeletonPreview \/>/);
-  assert.match(layout, /title:\s*"Starter Project"/);
-  assert.doesNotMatch(layout, /codex-preview|_sites-preview|themeColor|\bViewport\b/);
-  assert.doesNotMatch(css, /(^|\s)(html|body)\s*\{/m);
-
-  await assert.rejects(
-    access(new URL("public/_sites-preview", templateRoot)),
-  );
+  assert.match(data, /Atendemos el requerimiento de cada cliente con oportunidad/);
+  assert.match(data, /la misma calidad con la que fue recibida/);
+  assert.match(data, /Operaciones logísticas/);
+  assert.match(data, /Seguimiento y cumplimiento/);
+  assert.match(intro, /text-\[#751C3A\]/);
+  assert.match(process, /text-\[clamp\(4\.5rem,6\.5vw,7rem\)\]/);
+  assert.match(fleet, /fleetImages\.map/);
+  assert.match(assets, /title: "Mula"/);
+  assert.match(assets, /title: "Doble troque"/);
+  assert.match(assets, /title: "Sencillo"/);
+  assert.match(assets, /title: "Turbo"/);
 });

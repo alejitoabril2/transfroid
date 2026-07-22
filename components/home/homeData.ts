@@ -1,3 +1,5 @@
+import { processImages } from "./transfroidImageAssets";
+
 export const currentHeroFrames = Array.from(
   { length: 120 },
   (_, index) => `/sequences/current-hero/frame-${String(index + 1).padStart(3, "0")}.jpg`,
@@ -6,56 +8,72 @@ export const currentHeroFrames = Array.from(
 export const processSteps = [
   {
     number: "01",
-    title: "Recoleccion",
-    text: "Coordinamos la recogida de acuerdo con las necesidades de cada operacion.",
-    frame: "/sequences/current-hero/frame-018.jpg",
+    title: "Recolección",
+    text: "Atendemos el requerimiento de cada cliente con oportunidad, desde el punto de origen hasta el destino final.",
+    highlight: null,
+    image: processImages.recoleccion,
   },
   {
     number: "02",
-    title: "Conservacion",
-    text: "Mantenemos las condiciones necesarias durante todo el recorrido.",
-    frame: "/sequences/current-hero/frame-048.jpg",
+    title: "Conservación",
+    text: "Conservamos las condiciones de temperatura y humedad requeridas para proteger la calidad e integridad de la mercancía durante todo el recorrido.",
+    highlight: "Nuestro compromiso es entregar la carga con la misma calidad con la que fue recibida.",
+    image: processImages.conservacion,
   },
   {
     number: "03",
-    title: "Seguimiento",
-    text: "Supervisamos el movimiento de la carga y el cumplimiento de la operacion.",
-    frame: "/sequences/current-hero/frame-078.jpg",
+    title: "Trazabilidad",
+    text: "Monitoreamos y registramos cada etapa del recorrido para garantizar transparencia y control sobre la operación.",
+    highlight: "Un registro completo y verificable es la base de un transporte confiable.",
+    image: processImages.trazabilidad,
   },
   {
     number: "04",
     title: "Entrega",
-    text: "Completamos cada recorrido con seguridad, trazabilidad y puntualidad.",
-    frame: "/sequences/current-hero/frame-112.jpg",
+    text: "Entregamos con calidad y responsabilidad, preservando la temperatura y la integridad de la carga hasta el destino final.",
+    highlight: "Tecnología y seguimiento que respaldan cada entrega.",
+    image: processImages.entrega,
   },
 ];
 
 export const services = [
   {
     title: "Transporte refrigerado",
-    text: "Rutas para productos que requieren control, cuidado y continuidad termica.",
-    frame: "/sequences/current-hero/frame-030.jpg",
+    text: "Traslado de mercancías sensibles en vehículos equipados con sistemas de refrigeración y control de temperatura.",
+    image: processImages.conservacion,
   },
   {
     title: "Transporte de carga",
-    text: "Movimiento terrestre para operaciones que necesitan cumplimiento y coordinacion.",
-    frame: "/sequences/current-hero/frame-058.jpg",
+    text: "Movimiento terrestre especializado para cargas que requieren cumplimiento, coordinación y cuidado operativo.",
+    image: processImages.recoleccion,
   },
   {
-    title: "Operaciones logisticas",
-    text: "Acompanamiento operativo desde la recoleccion hasta la entrega final.",
-    frame: "/sequences/current-hero/frame-086.jpg",
+    title: "Operaciones logísticas",
+    text: "Acompañamiento operativo para planificar y controlar el traslado de mercancías sensibles a la temperatura.",
+    image: processImages.entrega,
   },
   {
     title: "Seguimiento y cumplimiento",
-    text: "Control de novedades, trazabilidad del servicio y cierre ordenado de cada ruta.",
-    frame: "/sequences/current-hero/frame-110.jpg",
+    text: "Control de procesos críticos que protege la integridad de la cadena de frío durante cada recorrido.",
+    image: processImages.trazabilidad,
   },
 ];
 
-export const metricPlaceholders = [
-  "Entregas a tiempo",
-  "Disponibilidad de flota",
-  "Novedades por ruta",
-  "Cumplimiento documental",
+export const serviceQualityPillars = [
+  {
+    title: "Confianza",
+    text: "Seguridad desde la recepción hasta la entrega, con un manejo responsable de la cadena de frío.",
+  },
+  {
+    title: "Oportunidad",
+    text: "Respuesta ágil a las necesidades del cliente y a las condiciones propias de cada operación.",
+  },
+  {
+    title: "Satisfacción",
+    text: "Cumplimiento permanente de las expectativas del cliente y de las exigencias de cada carga.",
+  },
+  {
+    title: "Garantía",
+    text: "Entrega del producto bajo las condiciones óptimas de frío exigidas para su conservación.",
+  },
 ];

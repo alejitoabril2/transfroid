@@ -1,14 +1,22 @@
 @import "tailwindcss";
 
 :root {
-  --background: #031b3a;
-  --foreground: #f5fcff;
-  --tf-blue-deep: #031b3a;
-  --tf-blue-ink: #06142e;
-  --tf-blue-vivid: #0077ff;
-  --tf-cyan: #00d9ff;
-  --tf-lime: #b7ff00;
-  --tf-ice: #f5fcff;
+  --color-brand-lime: #b7ff00;
+  --color-brand-dark: #031b3a;
+  --color-brand-ink: #06142e;
+  --color-brand-blue: #0077ff;
+  --color-brand-cyan: #00d9ff;
+  --color-brand-pale: #f5fcff;
+  --color-brand-text: #f5fcff;
+  --color-brand-copy: #c9d9e8;
+  --background: var(--color-brand-dark);
+  --foreground: var(--color-brand-pale);
+  --tf-blue-deep: var(--color-brand-dark);
+  --tf-blue-ink: var(--color-brand-ink);
+  --tf-blue-vivid: var(--color-brand-blue);
+  --tf-cyan: var(--color-brand-cyan);
+  --tf-lime: var(--color-brand-lime);
+  --tf-ice: var(--color-brand-pale);
   --font-geist-sans: Arial, Helvetica, sans-serif;
   --font-geist-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
@@ -192,6 +200,14 @@ html {
   text-transform: uppercase;
 }
 
+.hero-loader-tagline {
+  max-width: min(34rem, 80vw);
+  color: color-mix(in srgb, var(--color-brand-pale) 72%, transparent);
+  font-size: clamp(0.78rem, 1.4vw, 0.98rem);
+  line-height: 1.6;
+  text-align: center;
+}
+
 .hero-loader-line {
   width: min(260px, 56vw);
   height: 1px;
@@ -230,6 +246,22 @@ html {
 
 [data-process-copy] {
   will-change: opacity, transform, filter;
+}
+
+.fleet-selector-panel:not([hidden]) {
+  animation: fleet-panel-enter 360ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes fleet-panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .service-card {
@@ -393,10 +425,6 @@ html {
     min-height: 100svh;
   }
 
-  .hero-copy {
-    bottom: 6.8rem;
-  }
-
   .hero-loader-logo {
     font-size: 0.9rem;
     letter-spacing: 0.34em;
@@ -424,7 +452,15 @@ html {
     min-height: 100svh;
   }
 
-  .hero-story-panel {
+  .hero-sequence canvas {
+    display: none;
+  }
+
+  .hero-story-panel:not(:first-child) {
+    display: none !important;
+  }
+
+  .hero-story-panel:first-child {
     position: relative !important;
     opacity: 1 !important;
     transform: none !important;
@@ -435,5 +471,9 @@ html {
   .hero-loader-content,
   .hero-loader-line span {
     transition-duration: 1ms !important;
+  }
+
+  .fleet-selector-panel:not([hidden]) {
+    animation: none;
   }
 }

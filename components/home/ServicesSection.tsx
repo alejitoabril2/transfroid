@@ -14,34 +14,33 @@ export function ServicesSection() {
             </h2>
           </div>
           <p className="max-w-2xl text-lg leading-8 text-white/64">
-            Soluciones terrestres enfocadas en control, coordinacion y cumplimiento, sin prometer datos que aun deban validarse en la operacion.
+            Soluciones terrestres enfocadas en el control estricto de temperatura y humedad para evitar rupturas en la cadena de frío.
           </p>
         </div>
 
         <div className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {services.map((service) => (
-            <a
-              className="service-card group relative min-h-[430px] overflow-hidden rounded-md border border-[#00D9FF]/20 bg-[#00D9FF]/8 p-6 focus:outline-none focus:ring-2 focus:ring-[#B7FF00]"
-              href="#cotizar"
+            <article
+              className="service-card group relative min-h-[430px] overflow-hidden rounded-md border border-[var(--color-brand-cyan)]/20 bg-[var(--color-brand-ink)] p-6 transition duration-300 hover:-translate-y-1 hover:border-[var(--color-brand-lime)]/55"
               key={service.title}
             >
               <Image
-                src={service.frame}
-                alt=""
+                src={service.image.src}
+                alt={service.image.alt}
                 fill
                 unoptimized
                 sizes="(max-width: 768px) 100vw, 25vw"
-                className="object-cover transition duration-700 group-hover:scale-[1.04]"
+                className="object-contain object-top p-2 transition duration-700 group-hover:scale-[1.025]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#031B3A] via-[#031B3A]/42 to-transparent" />
               <div className="relative z-10 flex h-full min-h-[382px] flex-col justify-end">
-                <span className="mb-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#00D9FF]/45 text-lg transition group-hover:bg-[#B7FF00] group-hover:text-[#031B3A]">
-                  &rarr;
+                <span className="mb-auto inline-flex min-h-9 items-center self-start rounded-full border border-[var(--color-brand-cyan)]/45 bg-[var(--color-brand-dark)]/55 px-3 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--color-brand-lime)]">
+                  Refrigerado
                 </span>
                 <h3 className="text-2xl font-semibold uppercase leading-none">{service.title}</h3>
-                <p className="mt-4 text-sm leading-6 text-white/68">{service.text}</p>
+                <p className="mt-4 text-sm leading-6 text-white/76">{service.text}</p>
               </div>
-            </a>
+            </article>
           ))}
         </div>
       </div>

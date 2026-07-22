@@ -3,33 +3,35 @@
 import { useEffect, useRef, useState } from "react";
 import { getGsap } from "../../lib/animations/gsap";
 import { clamp, drawImageCover, prefersReducedMotion } from "../../lib/animations/scroll";
+import { BrandLogo } from "../brand/BrandLogo";
 import { currentHeroFrames } from "./homeData";
+import { heroImages } from "./transfroidImageAssets";
 
 const storyCopy = [
   {
-    eyebrow: "Transporte de carga refrigerada",
-    title: "Movemos tu carga. Protegemos su temperatura.",
-    text: "Operaciones terrestres con cuidado, trazabilidad y cumplimiento.",
+    eyebrow: "Transporte refrigerado",
+    title: "MOVEMOS TU CARGA. PROTEGEMOS SU TEMPERATURA.",
+    text: "Transportamos tu carga con responsabilidad, oportunidad y preservación de la cadena de frío.",
   },
   {
-    eyebrow: "Ruta en control",
-    title: "Seguridad y control en cada kilometro.",
-    text: "La carga avanza con seguimiento operativo y respuesta ante novedades.",
+    eyebrow: "Seguridad en ruta",
+    title: "SEGURIDAD Y CONTROL EN CADA KILÓMETRO.",
+    text: "Precisión, frescura intacta y tecnología para preservar la integridad de su mercancía.",
   },
   {
-    eyebrow: "Llegada coordinada",
-    title: "De carretera a warehouse.",
-    text: "Conectamos el recorrido con patios, centros logisticos y puntos de entrega.",
+    eyebrow: "Compromiso operativo",
+    title: "TU TRANQUILIDAD ES NUESTRO COMPROMISO EN CADA KILÓMETRO.",
+    text: null,
   },
   {
-    eyebrow: "Destino protegido",
-    title: "Conectamos tu carga con su destino.",
-    text: "Solicita una operacion refrigerada alineada con tus necesidades.",
+    eyebrow: "Destino coordinado",
+    title: "DE LA CARRETERA AL CENTRO LOGÍSTICO.",
+    text: null,
     cta: true,
   },
 ];
 
-const CRITICAL_FRAME_COUNT = 18;
+const CRITICAL_FRAME_COUNT = 12;
 const FRAME_SMOOTHING = 9.5;
 const MOBILE_FRAME_SMOOTHING = 24;
 
@@ -47,6 +49,18 @@ export function HeroSequence() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [loadedCount, setLoadedCount] = useState(0);
   const [loaderPhase, setLoaderPhase] = useState<"loading" | "opening" | "done">("loading");
+
+  useEffect(() => {
+    const introKey = "transfroid-intro-seen";
+
+    if (window.sessionStorage.getItem(introKey) === "true" || prefersReducedMotion()) {
+      const skipIntro = window.setTimeout(() => setLoaderPhase("done"), 0);
+      return () => window.clearTimeout(skipIntro);
+    }
+
+    const maximumWait = window.setTimeout(() => setLoaderPhase("opening"), 2200);
+    return () => window.clearTimeout(maximumWait);
+  }, []);
 
   useEffect(() => {
     if (loaderPhase !== "loading" || loadedCount < CRITICAL_FRAME_COUNT) {
@@ -68,6 +82,7 @@ export function HeroSequence() {
     }
 
     const doneTimer = window.setTimeout(() => {
+      window.sessionStorage.setItem("transfroid-intro-seen", "true");
       setLoaderPhase("done");
     }, 980);
 
@@ -140,7 +155,17 @@ export function HeroSequence() {
         }
 
         canvas.dataset.frame = String(roundedFrame + 1);
-        drawImageCover(context, image, window.innerWidth, window.innerHeight);
+        drawImageCover(
+          context,
+          image,
+          window.innerWidth,
+          window.innerHeight,
+          window.innerWidth < 768
+            ? 0.72
+            : window.innerWidth / window.innerHeight < 1
+              ? 0.66
+              : 0.5,
+        );
         lastRenderedFrameRef.current = roundedFrame;
       }
 
@@ -183,10 +208,15 @@ export function HeroSequence() {
       };
     };
 
+    const scheduledLoads: number[] = [];
     const loadRemainingFrames = () => {
+      const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+      const constrained = connection?.saveData || connection?.effectiveType === "2g";
+      const interval = constrained ? 28 : 10;
+
       currentHeroFrames.forEach((_, index) => {
         if (index >= CRITICAL_FRAME_COUNT) {
-          window.setTimeout(() => loadFrame(index), index * 8);
+          scheduledLoads.push(window.setTimeout(() => loadFrame(index), (index - CRITICAL_FRAME_COUNT) * interval));
         }
       });
     };
@@ -204,6 +234,7 @@ export function HeroSequence() {
       return () => {
         disposed = true;
         window.removeEventListener("resize", resizeCanvas);
+        scheduledLoads.forEach((timer) => window.clearTimeout(timer));
         if (rafRef.current !== null) {
           window.cancelAnimationFrame(rafRef.current);
         }
@@ -220,6 +251,7 @@ export function HeroSequence() {
     });
 
     heroTimeline
+      .fromTo(canvas, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.08, ease: "none" }, 0.03)
       .set("[data-hero-panel]", { transformOrigin: "left bottom" }, 0)
       .fromTo("[data-hero-panel='0']", { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)" }, { autoAlpha: 0, y: -24, scale: 0.992, filter: "blur(3px)", duration: 0.26, ease: "power2.inOut" }, 0.18)
       .fromTo("[data-hero-panel='1']", { autoAlpha: 0, y: 24, scale: 0.985, filter: "blur(3px)" }, { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.24, ease: "power2.out" }, 0.28)
@@ -246,6 +278,9 @@ export function HeroSequence() {
 
         if (frameIndex !== targetFrameRef.current) {
           targetFrameRef.current = frameIndex;
+          for (let nearby = Math.max(0, frameIndex - 2); nearby <= Math.min(currentHeroFrames.length - 1, frameIndex + 4); nearby += 1) {
+            loadFrame(nearby);
+          }
           requestRender();
         }
 
@@ -268,6 +303,7 @@ export function HeroSequence() {
     return () => {
       disposed = true;
       window.removeEventListener("resize", resizeCanvas);
+      scheduledLoads.forEach((timer) => window.clearTimeout(timer));
       heroTimeline.kill();
       parallaxTween.kill();
       canvasTrigger.kill();
@@ -281,21 +317,35 @@ export function HeroSequence() {
   return (
     <section
       ref={sectionRef}
-      className="hero-sequence relative h-[390vh] overflow-clip bg-[#031B3A] text-[#F5FCFF] max-md:h-[320svh]"
+      className="hero-sequence relative h-[390vh] overflow-clip bg-[var(--color-brand-dark)] text-[var(--color-brand-pale)] max-md:h-[320svh]"
       aria-label="Historia visual de Transfroid controlada por scroll"
     >
       <div className="sticky top-0 h-screen overflow-hidden max-md:h-[100svh]">
+        <picture>
+          <source
+            media="(max-width: 900px), (orientation: portrait)"
+            srcSet={heroImages.mobile.src}
+          />
+          <img
+            className="hero-static-fallback absolute inset-0 h-full w-full object-cover"
+            src={heroImages.desktop.src}
+            alt={heroImages.desktop.alt}
+            width={heroImages.desktop.width}
+            height={heroImages.desktop.height}
+            fetchPriority="high"
+          />
+        </picture>
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 h-full w-full bg-[#031B3A]"
+          className="absolute inset-0 h-full w-full bg-[#031B3A] opacity-0"
           aria-hidden="true"
         />
         <noscript>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             className="absolute inset-0 h-full w-full object-cover"
-            src="/sequences/current-hero/frame-001.jpg"
-            alt="Tractocamion refrigerado Transfroid en operacion logistica"
+            src={heroImages.desktop.src}
+            alt={heroImages.desktop.alt}
           />
         </noscript>
 
@@ -312,8 +362,8 @@ export function HeroSequence() {
 
         <SiteNav isSolid={isNavSolid || isMenuOpen} isMenuOpen={isMenuOpen} onMenu={() => setIsMenuOpen((open) => !open)} />
 
-        <div data-hero-copy className="hero-copy pointer-events-none absolute inset-x-0 bottom-[11vh] z-20 px-5 md:bottom-[12vh] md:px-10 lg:px-14">
-          <div className="relative max-w-[840px]">
+        <div data-hero-copy className="hero-copy pointer-events-none absolute inset-x-0 top-[18svh] z-20 px-5 md:top-[16vh] md:px-10 lg:px-14">
+          <div className="relative max-w-[520px]">
             {storyCopy.map((item, index) => (
               <div
                 className={`hero-story-panel ${index === 0 ? "opacity-100" : "opacity-0"} ${index > 0 ? "absolute inset-x-0 bottom-0" : ""}`}
@@ -321,12 +371,20 @@ export function HeroSequence() {
                 key={item.title}
               >
                 <p className="terminal-label text-white/72">{item.eyebrow}</p>
-                <h1 className="mt-5 max-w-4xl text-[clamp(2.55rem,6.2vw,6.8rem)] font-semibold uppercase leading-[0.9] text-white text-shadow">
-                  {item.title}
-                </h1>
-                <p className="mt-6 max-w-xl text-base leading-7 text-white/72 md:text-lg">
-                  {item.text}
-                </p>
+                {index === 0 ? (
+                  <h1 className="mt-5 max-w-3xl text-[clamp(3.1rem,5.4vw,7rem)] font-semibold uppercase leading-[0.86] tracking-[-0.025em] text-white text-shadow">
+                    {item.title}
+                  </h1>
+                ) : (
+                  <p className={`mt-5 font-semibold uppercase leading-[0.9] text-white text-shadow ${index === 2 ? "text-[clamp(2.1rem,3.5vw,4.5rem)]" : "text-[clamp(2.55rem,4vw,5.3rem)]"}`}>
+                    {item.title}
+                  </p>
+                )}
+                {item.text ? (
+                  <p className="mt-6 max-w-xl text-base leading-7 text-white/72 md:text-lg">
+                    {item.text}
+                  </p>
+                ) : null}
                 {item.cta ? (
                   <a
                     className="pointer-events-auto mt-8 inline-flex min-h-12 items-center rounded-full bg-[#B7FF00] px-6 text-sm font-bold uppercase tracking-[0.14em] text-[#031B3A] transition hover:bg-[#00D9FF] focus:outline-none focus:ring-2 focus:ring-[#B7FF00] focus:ring-offset-2 focus:ring-offset-[#031B3A]"
@@ -347,7 +405,7 @@ export function HeroSequence() {
           </div>
           <div className="absolute inset-x-5 bottom-[9vh] flex items-end justify-between gap-6 md:inset-x-10 lg:inset-x-14">
             <p className="max-w-[18rem] font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#0077FF]">
-              La ruta continua en una operacion coordinada
+              La ruta continúa en una operación coordinada
             </p>
             <div className="hidden h-24 w-px bg-gradient-to-b from-[#00D9FF] to-transparent md:block" />
           </div>
@@ -363,7 +421,9 @@ export function HeroSequence() {
             <div className="hero-loader-panel hero-loader-panel-top" />
             <div className="hero-loader-panel hero-loader-panel-bottom" />
             <div className="hero-loader-content">
-              <p className="hero-loader-logo">Transfroid</p>
+              <BrandLogo priority alt="" />
+              <p className="hero-loader-logo">TRANSFROID FAM SAS</p>
+              <p className="hero-loader-tagline">Más que transportar, somos los guardianes de su mercancía.</p>
               <div className="hero-loader-line">
                 <span style={{ width: `${Math.min(100, (loadedCount / CRITICAL_FRAME_COUNT) * 100)}%` }} />
               </div>
@@ -392,10 +452,19 @@ function SiteNav({
   ];
 
   return (
-    <header className={`site-nav fixed left-0 right-0 top-0 z-50 ${isSolid ? "site-nav-solid" : ""}`}>
+    <header
+      className={`site-nav fixed left-0 right-0 top-0 z-50 ${isSolid ? "site-nav-solid" : ""}`}
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && isMenuOpen) onMenu();
+      }}
+    >
       <div className="mx-auto flex max-w-[1540px] items-center justify-between px-5 py-5 transition-all duration-300 md:px-10 lg:px-14">
-        <a className="font-mono text-sm font-bold uppercase tracking-[0.28em] text-white focus:outline-none focus:ring-2 focus:ring-white" href="#">
-          Transfroid
+        <a
+          className="rounded-sm focus:outline-none focus:ring-2 focus:ring-[#B7FF00]"
+          href="#"
+          aria-label="Transfroid FAM SAS, volver al inicio"
+        >
+          <BrandLogo priority compact alt="" />
         </a>
         <nav className="hidden items-center gap-8 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-white/72 md:flex">
           {navItems.map(([label, href]) => (
@@ -414,8 +483,9 @@ function SiteNav({
           <button
             className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#00D9FF]/45 text-white transition hover:bg-[#00D9FF] hover:text-[#031B3A] focus:outline-none focus:ring-2 focus:ring-[#B7FF00] md:hidden"
             type="button"
-            aria-label={isMenuOpen ? "Cerrar menu" : "Abrir menu"}
+            aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={isMenuOpen}
+            aria-controls="mobile-navigation"
             onClick={onMenu}
           >
             <span className="relative h-3.5 w-5">
@@ -425,7 +495,12 @@ function SiteNav({
           </button>
         </div>
       </div>
-      <div className={`mobile-nav-panel md:hidden ${isMenuOpen ? "mobile-nav-panel-open" : ""}`}>
+      <div
+        id="mobile-navigation"
+        className={`mobile-nav-panel md:hidden ${isMenuOpen ? "mobile-nav-panel-open" : ""}`}
+        aria-hidden={!isMenuOpen}
+        inert={!isMenuOpen}
+      >
         {navItems.map(([label, href]) => (
           <a className="border-b border-white/12 py-5 text-3xl font-semibold uppercase leading-none" href={href} key={href} onClick={onMenu}>
             {label}

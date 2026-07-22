@@ -240,6 +240,10 @@ html {
   transform: translateY(-12px) scale(0.98);
 }
 
+.hero-reduced-cta {
+  display: none;
+}
+
 .process-number {
   font-variant-numeric: tabular-nums;
 }
@@ -465,6 +469,10 @@ html {
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
+  }
+
+  .hero-reduced-cta {
+    display: block;
   }
 
   .hero-loader-panel,

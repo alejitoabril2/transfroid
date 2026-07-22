@@ -14,29 +14,31 @@ export function ServicesSection() {
             </h2>
           </div>
           <p className="max-w-2xl text-lg leading-8 text-white/64">
-            Soluciones terrestres enfocadas en el control estricto de temperatura y humedad para evitar rupturas en la cadena de frío.
+            Diseñamos soluciones terrestres enfocadas en el control estricto de temperatura y humedad para evitar rupturas en la cadena de frío.
           </p>
         </div>
 
         <div className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {services.map((service) => (
             <article
-              className="service-card group relative min-h-[430px] overflow-hidden rounded-md border border-[var(--color-brand-cyan)]/20 bg-[var(--color-brand-ink)] p-6 transition duration-300 hover:-translate-y-1 hover:border-[var(--color-brand-lime)]/55"
+              className="service-card group flex min-h-[430px] flex-col overflow-hidden rounded-md border border-[var(--color-brand-cyan)]/20 bg-[var(--color-brand-ink)] transition duration-300 hover:-translate-y-1 hover:border-[var(--color-brand-lime)]/55"
               key={service.title}
             >
-              <Image
-                src={service.image.src}
-                alt={service.image.alt}
-                fill
-                unoptimized
-                sizes="(max-width: 768px) 100vw, 25vw"
-                className="object-contain object-top p-2 transition duration-700 group-hover:scale-[1.025]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#031B3A] via-[#031B3A]/42 to-transparent" />
-              <div className="relative z-10 flex h-full min-h-[382px] flex-col justify-end">
-                <span className="mb-auto inline-flex min-h-9 items-center self-start rounded-full border border-[var(--color-brand-cyan)]/45 bg-[var(--color-brand-dark)]/55 px-3 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--color-brand-lime)]">
+              <div className="relative aspect-[4/3] shrink-0 overflow-hidden border-b border-[var(--color-brand-cyan)]/18 bg-[#08203D]">
+                <Image
+                  src={service.image.src}
+                  alt={service.image.alt}
+                  fill
+                  unoptimized
+                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 25vw"
+                  className="object-cover transition duration-700 group-hover:scale-[1.025]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#031B3A]/35 to-transparent" />
+                <span className="absolute left-5 top-5 inline-flex min-h-9 items-center rounded-full border border-[var(--color-brand-cyan)]/45 bg-[var(--color-brand-dark)]/82 px-3 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--color-brand-lime)]">
                   Refrigerado
                 </span>
+              </div>
+              <div className="flex flex-1 flex-col p-6">
                 <h3 className="text-2xl font-semibold uppercase leading-none">{service.title}</h3>
                 <p className="mt-4 text-sm leading-6 text-white/76">{service.text}</p>
               </div>

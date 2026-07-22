@@ -121,7 +121,7 @@ export function ProcessSection() {
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-brand-dark)]/72 via-transparent to-transparent" />
-              <span className="absolute bottom-4 left-4 font-mono text-6xl font-black leading-none text-[var(--color-brand-lime)]">
+              <span className="absolute bottom-4 left-4 font-mono text-4xl font-black leading-none text-[var(--color-brand-lime)] sm:text-5xl">
                 {step.number}
               </span>
             </div>
@@ -141,7 +141,7 @@ export function ProcessSection() {
       <div className="sticky top-0 mx-auto hidden h-screen max-w-[1540px] grid-cols-[0.78fr_1.22fr] items-center gap-10 px-10 py-16 md:grid lg:px-14">
         <div ref={contentRef} className="relative z-10">
           <p data-process-copy className="terminal-label">Proceso operativo</p>
-          <p data-process-copy className="process-number mt-8 text-[clamp(4.5rem,6.5vw,7rem)] font-semibold leading-none tracking-[-0.04em] text-[var(--color-brand-lime)]">
+          <p data-process-copy className="process-number mt-8 text-[clamp(2.25rem,3vw,3.75rem)] font-semibold leading-none tracking-[-0.04em] text-[var(--color-brand-lime)]">
             {active.number}
           </p>
           <h3 data-process-copy className="mt-1 text-[clamp(2.4rem,4.4vw,4.8rem)] font-semibold uppercase leading-[0.94]">

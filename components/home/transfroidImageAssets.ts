@@ -32,7 +32,7 @@ export const heroImages = {
 export const processImages = {
   recoleccion: {
     src: "/images/transfroid/process/recoleccion.webp",
-    alt: "Camión refrigerado llegando al punto de recolección",
+    alt: "Camión refrigerado Transfroid en el punto de recolección",
     width: 1600,
     height: 1000,
     status: "generated",
@@ -41,7 +41,7 @@ export const processImages = {
   },
   conservacion: {
     src: "/images/transfroid/process/conservacion.webp",
-    alt: "Tractomula refrigerada en ruta con control de temperatura",
+    alt: "Camión refrigerado Transfroid conservando la carga durante el recorrido",
     width: 1600,
     height: 1000,
     status: "generated",
@@ -50,7 +50,7 @@ export const processImages = {
   },
   trazabilidad: {
     src: "/images/transfroid/process/trazabilidad.webp",
-    alt: "Tractomula refrigerada en ruta logística con seguimiento operativo",
+    alt: "Camión refrigerado Transfroid durante una operación con trazabilidad",
     width: 1600,
     height: 1000,
     status: "generated",
@@ -59,7 +59,7 @@ export const processImages = {
   },
   entrega: {
     src: "/images/transfroid/process/entrega.webp",
-    alt: "Camión refrigerado llegando al centro de distribución",
+    alt: "Camión refrigerado Transfroid llegando al destino final",
     width: 1600,
     height: 1000,
     status: "generated",
@@ -78,7 +78,7 @@ export const fleetImages = [
     technical: "Configuración refrigerada. Las especificaciones se validan de acuerdo con la carga y la disponibilidad operativa.",
     image: {
       src: "/images/transfroid/fleet/mula.webp",
-      alt: "Tractomula refrigerada verde Transfroid con tráiler blanco",
+      alt: "Tractomula refrigerada Transfroid para transporte nacional",
       width: 1400,
       height: 1050,
       status: "generated",
@@ -130,7 +130,7 @@ export const fleetImages = [
     technical: "Equipo refrigerado con configuración adaptable al servicio; especificaciones por validar.",
     image: {
       src: "/images/transfroid/fleet/sencillo.webp",
-      alt: "Camión sencillo refrigerado para distribución regional",
+      alt: "Camión sencillo refrigerado de Transfroid",
       width: 1400,
       height: 1050,
       status: "generated",
@@ -156,7 +156,7 @@ export const fleetImages = [
     technical: "Equipo refrigerado compacto; detalles técnicos disponibles al definir la operación.",
     image: {
       src: "/images/transfroid/fleet/turbo.webp",
-      alt: "Camión turbo refrigerado para distribución urbana",
+      alt: "Camión turbo refrigerado de Transfroid",
       width: 1400,
       height: 1050,
       status: "generated",

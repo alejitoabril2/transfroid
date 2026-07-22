@@ -4,23 +4,24 @@ import { useEffect, useRef, useState } from "react";
 import { getGsap } from "../../lib/animations/gsap";
 import { clamp, drawImageCover, prefersReducedMotion } from "../../lib/animations/scroll";
 import { BrandLogo } from "../brand/BrandLogo";
+import { siteConfig } from "../../lib/siteConfig";
 import { currentHeroFrames } from "./homeData";
 import { heroImages } from "./transfroidImageAssets";
 
 const storyCopy = [
   {
     eyebrow: "Transporte refrigerado",
-    title: "MOVEMOS TU CARGA. PROTEGEMOS SU TEMPERATURA.",
-    text: "Transportamos tu carga con responsabilidad, oportunidad y preservación de la cadena de frío.",
+    title: "MÁS QUE TRANSPORTE SOMOS LOS GUARDIANES DE TU MERCANCÍA.",
+    text: "Precisión y frescura intacta con tecnología que preserva.",
   },
   {
     eyebrow: "Seguridad en ruta",
-    title: "SEGURIDAD Y CONTROL EN CADA KILÓMETRO.",
-    text: "Precisión, frescura intacta y tecnología para preservar la integridad de su mercancía.",
+    title: "TRANSPORTAMOS TU CARGA CON RESPONSABILIDAD, OPORTUNIDAD Y PRESERVACIÓN DE LA CADENA DE FRÍO.",
+    text: null,
   },
   {
     eyebrow: "Compromiso operativo",
-    title: "TU TRANQUILIDAD ES NUESTRO COMPROMISO EN CADA KILÓMETRO.",
+    title: "TU TRANQUILIDAD ES NUESTRO COMPROMISO CON CADA KILÓMETRO.",
     text: null,
   },
   {
@@ -51,14 +52,12 @@ export function HeroSequence() {
   const [loaderPhase, setLoaderPhase] = useState<"loading" | "opening" | "done">("loading");
 
   useEffect(() => {
-    const introKey = "transfroid-intro-seen";
-
-    if (window.sessionStorage.getItem(introKey) === "true" || prefersReducedMotion()) {
+    if (prefersReducedMotion()) {
       const skipIntro = window.setTimeout(() => setLoaderPhase("done"), 0);
       return () => window.clearTimeout(skipIntro);
     }
 
-    const maximumWait = window.setTimeout(() => setLoaderPhase("opening"), 2200);
+    const maximumWait = window.setTimeout(() => setLoaderPhase("opening"), 3200);
     return () => window.clearTimeout(maximumWait);
   }, []);
 
@@ -69,7 +68,7 @@ export function HeroSequence() {
 
     const openingTimer = window.setTimeout(() => {
       setLoaderPhase("opening");
-    }, 280);
+    }, 1500);
 
     return () => {
       window.clearTimeout(openingTimer);
@@ -82,9 +81,8 @@ export function HeroSequence() {
     }
 
     const doneTimer = window.setTimeout(() => {
-      window.sessionStorage.setItem("transfroid-intro-seen", "true");
       setLoaderPhase("done");
-    }, 980);
+    }, 1100);
 
     return () => {
       window.clearTimeout(doneTimer);
@@ -253,16 +251,15 @@ export function HeroSequence() {
     heroTimeline
       .fromTo(canvas, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.08, ease: "none" }, 0.03)
       .set("[data-hero-panel]", { transformOrigin: "left bottom" }, 0)
-      .fromTo("[data-hero-panel='0']", { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)" }, { autoAlpha: 0, y: -24, scale: 0.992, filter: "blur(3px)", duration: 0.26, ease: "power2.inOut" }, 0.18)
-      .fromTo("[data-hero-panel='1']", { autoAlpha: 0, y: 24, scale: 0.985, filter: "blur(3px)" }, { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.24, ease: "power2.out" }, 0.28)
-      .to("[data-hero-panel='1']", { autoAlpha: 0, y: -22, scale: 0.992, filter: "blur(3px)", duration: 0.22, ease: "power2.inOut" }, 0.48)
-      .fromTo("[data-hero-panel='2']", { autoAlpha: 0, y: 24, scale: 0.985, filter: "blur(3px)" }, { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.24, ease: "power2.out" }, 0.58)
-      .to("[data-hero-panel='2']", { autoAlpha: 0, y: -22, scale: 0.992, filter: "blur(3px)", duration: 0.2, ease: "power2.inOut" }, 0.76)
-      .fromTo("[data-hero-panel='3']", { autoAlpha: 0, y: 24, scale: 0.985, filter: "blur(3px)" }, { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.24, ease: "power2.out" }, 0.83)
+      .fromTo("[data-hero-panel='0']", { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -16, duration: 0.08, ease: "power2.inOut" }, 0.27)
+      .fromTo("[data-hero-panel='1']", { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.08, ease: "power2.out" }, 0.35)
+      .to("[data-hero-panel='1']", { autoAlpha: 0, y: -16, duration: 0.08, ease: "power2.inOut" }, 0.55)
+      .fromTo("[data-hero-panel='2']", { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.08, ease: "power2.out" }, 0.63)
+      .to("[data-hero-panel='2']", { autoAlpha: 0, y: -16, duration: 0.08, ease: "power2.inOut" }, 0.81)
+      .fromTo("[data-hero-panel='3']", { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.08, ease: "power2.out" }, 0.89)
       .fromTo("[data-hero-overlay]", { opacity: 0.38 }, { opacity: 0.7, duration: 1, ease: "none" }, 0)
       .fromTo("[data-hero-copy]", { yPercent: 0 }, { yPercent: -5, duration: 1, ease: "none" }, 0)
-      .fromTo("[data-hero-exit]", { autoAlpha: 0, yPercent: 18 }, { autoAlpha: 1, yPercent: 0, duration: 0.2, ease: "power2.out" }, 0.78)
-      .to("[data-hero-copy]", { autoAlpha: 0.18, yPercent: -9, filter: "blur(2px)", duration: 0.12, ease: "power2.out" }, 0.9)
+      .fromTo("[data-hero-exit]", { autoAlpha: 0, yPercent: 18 }, { autoAlpha: 1, yPercent: 0, duration: 0.08, ease: "power2.out" }, 0.95)
       .to("[data-hero-footer]", { autoAlpha: 0, y: 12, duration: 0.08, ease: "power2.out" }, 0.9);
 
     const canvasTrigger = ScrollTrigger.create({
@@ -317,7 +314,7 @@ export function HeroSequence() {
   return (
     <section
       ref={sectionRef}
-      className="hero-sequence relative h-[390vh] overflow-clip bg-[var(--color-brand-dark)] text-[var(--color-brand-pale)] max-md:h-[320svh]"
+      className="hero-sequence relative h-[520vh] overflow-clip bg-[var(--color-brand-dark)] text-[var(--color-brand-pale)] max-md:h-[460svh]"
       aria-label="Historia visual de Transfroid controlada por scroll"
     >
       <div className="sticky top-0 h-screen overflow-hidden max-md:h-[100svh]">
@@ -386,15 +383,13 @@ export function HeroSequence() {
                   </p>
                 ) : null}
                 {item.cta ? (
-                  <a
-                    className="pointer-events-auto mt-8 inline-flex min-h-12 items-center rounded-full bg-[#B7FF00] px-6 text-sm font-bold uppercase tracking-[0.14em] text-[#031B3A] transition hover:bg-[#00D9FF] focus:outline-none focus:ring-2 focus:ring-[#B7FF00] focus:ring-offset-2 focus:ring-offset-[#031B3A]"
-                    href="#cotizar"
-                  >
-                    Solicitar servicio
-                  </a>
+                  <HeroCta />
                 ) : null}
               </div>
             ))}
+            <div className="hero-reduced-cta pointer-events-auto">
+              <HeroCta />
+            </div>
           </div>
         </div>
 
@@ -404,7 +399,7 @@ export function HeroSequence() {
             <span className="block h-full w-1/2 bg-gradient-to-r from-[#00D9FF] via-[#B7FF00] to-transparent" />
           </div>
           <div className="absolute inset-x-5 bottom-[9vh] flex items-end justify-between gap-6 md:inset-x-10 lg:inset-x-14">
-            <p className="max-w-[18rem] font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#0077FF]">
+            <p className="max-w-[23rem] font-mono text-sm font-bold uppercase tracking-[0.16em] text-[#005FCC] md:text-base md:tracking-[0.2em]">
               La ruta continúa en una operación coordinada
             </p>
             <div className="hidden h-24 w-px bg-gradient-to-b from-[#00D9FF] to-transparent md:block" />
@@ -433,6 +428,29 @@ export function HeroSequence() {
       </div>
 
     </section>
+  );
+}
+
+function HeroCta() {
+  return (
+    <div className="pointer-events-auto mt-8 flex flex-wrap items-center gap-3">
+      <a
+        className="inline-flex min-h-12 items-center rounded-full bg-[#B7FF00] px-6 text-sm font-bold uppercase tracking-[0.14em] text-[#031B3A] transition hover:bg-[#00D9FF] focus:outline-none focus:ring-2 focus:ring-[#B7FF00] focus:ring-offset-2 focus:ring-offset-[#031B3A]"
+        href="#cotizar"
+      >
+        Cotizar ahora
+      </a>
+      {siteConfig.whatsappHref ? (
+        <a
+          className="inline-flex min-h-12 items-center rounded-full border border-white/45 px-5 text-sm font-semibold text-white transition hover:border-[#B7FF00] hover:text-[#B7FF00] focus:outline-none focus:ring-2 focus:ring-[#B7FF00]"
+          href={siteConfig.whatsappHref}
+          rel="noreferrer"
+          target="_blank"
+        >
+          Hablar por WhatsApp
+        </a>
+      ) : null}
+    </div>
   );
 }
 

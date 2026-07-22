@@ -13,7 +13,7 @@ export function FleetSection() {
               Equipos para mover frío con criterio.
             </h2>
           </div>
-          <p className="max-w-2xl text-lg leading-8 text-[var(--color-brand-copy)]">
+          <p className="max-w-2xl text-lg leading-8 text-[#294761]">
             Una flota disponible para responder a las condiciones de cada carga, ruta y operación.
           </p>
         </div>
@@ -39,13 +39,13 @@ export function FleetSection() {
               <div className="p-6 sm:p-8">
                 <p className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-brand-blue)]">Vehículo refrigerado</p>
                 <h3 className="mt-4 text-[clamp(2rem,3.3vw,3.5rem)] font-semibold uppercase leading-none">{vehicle.title}</h3>
-                <p className="mt-5 text-base leading-7 text-[var(--color-brand-copy)]">{vehicle.text}</p>
+                <p className="mt-5 text-base leading-7 text-[#294761]">{vehicle.text}</p>
 
                 <div className="mt-7 border-t border-[var(--color-brand-blue)]/14 pt-5">
                   <h4 className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[var(--color-brand-blue)]">Tipo de operación</h4>
                   <ul className="mt-4 space-y-2.5">
                     {vehicle.operation.map((item) => (
-                      <li className="flex gap-3 text-sm leading-6 text-[var(--color-brand-copy)]" key={item}>
+                      <li className="flex gap-3 text-sm leading-6 text-[#294761]" key={item}>
                         <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[var(--color-brand-lime)]" />
                         {item}
                       </li>
@@ -56,11 +56,11 @@ export function FleetSection() {
                 <dl className="mt-7 grid gap-5 border-t border-[var(--color-brand-blue)]/14 pt-5 sm:grid-cols-2">
                   <div>
                     <dt className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[var(--color-brand-blue)]">Cobertura recomendada</dt>
-                    <dd className="mt-2 text-sm leading-6 text-[var(--color-brand-copy)]">{vehicle.coverage}</dd>
+                    <dd className="mt-2 text-sm leading-6 text-[#294761]">{vehicle.coverage}</dd>
                   </div>
                   <div>
                     <dt className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[var(--color-brand-blue)]">Información técnica</dt>
-                    <dd className="mt-2 text-sm leading-6 text-[var(--color-brand-copy)]">{vehicle.technical}</dd>
+                    <dd className="mt-2 text-sm leading-6 text-[#294761]">{vehicle.technical}</dd>
                   </div>
                 </dl>
               </div>

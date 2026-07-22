@@ -33,12 +33,12 @@ test("assembles the complete homepage in the intended order", async () => {
 test("uses one H1 and the approved Spanish hero story", async () => {
   const hero = await read("components/home/HeroSequence.tsx");
   assert.equal(hero.match(/<h1\b/g)?.length, 1);
-  assert.match(hero, /MOVEMOS TU CARGA\. PROTEGEMOS SU TEMPERATURA\./);
-  assert.match(hero, /Transportamos tu carga con responsabilidad, oportunidad y preservación de la cadena de frío\./);
-  assert.match(hero, /SEGURIDAD Y CONTROL EN CADA KILÓMETRO\./);
-  assert.match(hero, /Precisión, frescura intacta y tecnología para preservar la integridad de su mercancía\./);
-  assert.match(hero, /TU TRANQUILIDAD ES NUESTRO COMPROMISO EN CADA KILÓMETRO\./);
+  assert.match(hero, /MÁS QUE TRANSPORTE SOMOS LOS GUARDIANES DE TU MERCANCÍA\./);
+  assert.match(hero, /Precisión y frescura intacta con tecnología que preserva\./);
+  assert.match(hero, /TRANSPORTAMOS TU CARGA CON RESPONSABILIDAD, OPORTUNIDAD Y PRESERVACIÓN DE LA CADENA DE FRÍO\./);
+  assert.match(hero, /TU TRANQUILIDAD ES NUESTRO COMPROMISO CON CADA KILÓMETRO\./);
   assert.match(hero, /DE LA CARRETERA AL CENTRO LOGÍSTICO\./);
+  assert.match(hero, /Cotizar ahora/);
   assert.doesNotMatch(hero, /warehouse/i);
 });
 
@@ -99,12 +99,14 @@ test("keeps PDF-approved process, service, and fleet content", async () => {
     read("components/home/transfroidImageAssets.ts"),
   ]);
 
-  assert.match(data, /Atendemos el requerimiento de cada cliente con oportunidad/);
+  assert.match(data, /Cumplimos los requerimientos de cada cliente con oportunidad/);
   assert.match(data, /la misma calidad con la que fue recibida/);
+  assert.match(data, /Garantizamos transparencia en cada entrega/);
+  assert.match(data, /Entregamos la carga con calidad y responsabilidad/);
   assert.match(data, /Operaciones logísticas/);
   assert.match(data, /Seguimiento y cumplimiento/);
   assert.match(intro, /text-\[#751C3A\]/);
-  assert.match(process, /text-\[clamp\(4\.5rem,6\.5vw,7rem\)\]/);
+  assert.match(process, /text-\[clamp\(2\.25rem,3vw,3\.75rem\)\]/);
   assert.match(fleet, /fleetImages\.map/);
   assert.match(assets, /title: "Mula"/);
   assert.match(assets, /title: "Doble troque"/);
